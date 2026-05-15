@@ -9,22 +9,121 @@ title: What is AI Code Review?
 
 Understand the challenges of traditional code review and where AI code review can help.
 
+This chapter also explains why developers should use AI review to check their own changes before sending AI-generated code directly to a pull request (Pull Request, hereafter PR).
+
 ## Challenges in Traditional Review
 
-TODO: Organize common issues such as review waiting time, cognitive load, reviewer dependency, and inconsistent feedback.
+Code review is important, but several problems commonly appear in team development.
+
+- **Review waiting time**  
+  Even after a PR is opened, review may not start immediately if reviewers are busy with other work. When this happens frequently, even small changes can block the development flow.
+
+- **Heavy reviewer workload**  
+  A reviewer needs to read the changed code, understand why it was changed, and consider whether it affects other features. Large changes or PRs with little explanation make review much harder.
+
+- **Different reviewers notice different things**  
+  Experienced reviewers may notice code structure and broader impact, but they may not always have enough time. Different reviewers also focus on different things, which can make feedback inconsistent.
+
+These challenges do not mean code review is unnecessary. They mean teams need a way to support the routine and initial parts of review so humans can focus on the decisions that require judgment.
 
 ## What AI Code Review Changes
 
-TODO: Explain how developers can receive feedback soon after opening a Pull Request and automate first-pass checks.
+AI code review is a workflow where AI reads a PR or changed code and supports the review process.
+
+With AI review, developers can receive feedback soon after opening a PR. Before waiting for a human reviewer, they get a chance to look over their own changes again.
+
+For example, if AI summarizes a PR, reviewers can understand the overall change more quickly. The implementer can also check whether the explanation is clear and whether the change is larger than necessary.
+
+This lets human reviewers spend more time on questions that need human judgment: whether the requirement is right, whether the code will remain easy to change later, and whether the change is good for users.
+
+AI review does not replace human review. It raises the baseline before human review begins and makes the review process easier to start.
+
+## Relationship with AI Coding
+
+AI coding tools can help generate code, clean up existing code, write tests, and fix bugs. They can increase development speed, but developers should not trust generated code automatically.
+
+AI-generated code may include problems such as:
+
+- It looks plausible but does not fully satisfy the requirement
+- It does not match existing code style
+- It lacks handling for errors
+- It forces the code to work in a way that lowers readability or makes future changes harder
+- It adds fallbacks for environment variables or input values, which can prevent errors from appearing when values are missing and make bugs harder to find
+- It includes unused logic or unnecessary complexity
+- It has many tests for normal behavior but lacks boundary-value tests such as empty values, upper limits, and lower limits
+
+In other words, the more AI coding increases code-writing speed, the more important review becomes. If creation accelerates but verification does not, low-quality changes can accumulate quickly.
+
+AI code review pairs well with AI coding. Developers can use one AI-assisted workflow to implement the change and another review-oriented workflow to check why the change is needed, whether it affects other features, and whether the tests are enough.
+
+## Why Self-AI Review Matters
+
+Self-AI review means using AI review on your own changes before asking a human reviewer to review them.
+
+This is especially important when using AI coding. Developers should not think, "AI wrote it, so it is fine." They need to treat the change as code they own and are responsible for.
+
+Self-AI review is also useful for code you wrote yourself. When you write code yourself, it is easy to assume, often without noticing, that the code must be correct. This kind of bias can make small typos or mistakes in conditions harder to notice.
+
+Using AI review as a third-party perspective can help you catch small mistakes you missed. It gives you a way to look at your own change more objectively before asking a human reviewer.
+
+Running self-AI review before opening or finalizing a PR can help you:
+
+- Fix obvious mistakes earlier
+- Notice missing context in the PR description
+- Identify additional tests or review points
+- Reduce the burden on human reviewers
+- Keep human review focused on meaningful discussion
+
+You do not need to accept every AI suggestion. The important part is using the comments as prompts to think: why is this change needed, is this implementation enough, and could it affect other features?
+
+In AI coding, the developer's role expands from "the person who writes every line manually" to "the person who reads, judges, and owns AI-assisted output." Self-AI review is a basic habit for fulfilling that responsibility.
 
 ## Roles of AI Review and Human Review
 
-TODO: Explain how AI can handle initial reading and routine feedback while humans handle requirements, priorities, and final decisions.
+AI review and human review are good at different things.
 
-## What AI Review Is Good At
+AI is good at reading changed code quickly and pointing out general concerns. It can identify unused variables, missing-value handling, missing error handling, possible test gaps, or overly complex logic.
 
-TODO: Cover diff summaries, obvious bug detection, edge-case suggestions, and proposed fixes.
+Humans are better at judging product purpose, user impact, team priorities, and organization-specific context. If AI says, "this implementation is complex," that complexity may still be necessary for the business requirement. Humans must make the final decision.
 
-## What AI Review Is Not Good At
+A useful division of responsibility is:
 
-TODO: Explain the difficulty of business judgment, implicit context, product direction, and organization-specific tradeoffs.
+| Owner | Main role |
+| --- | --- |
+| AI review | Change summary, first-pass checks, general risk detection, suggested fixes |
+| Implementer | Read AI comments, make necessary changes, explain the intent of the change |
+| Human reviewer | Requirements, design, priority, product judgment, and final approval |
+
+By separating what AI supports from what humans decide, teams can improve both the efficiency and quality of review.
+
+## Strengths and Limits of AI Review
+
+AI review has both strengths and limits. AI comments are useful, but they are not always correct. It is important to separate what AI can support from what humans should judge.
+
+### Strengths
+
+AI review is good at finding general risks in changed code and helping readers understand the change.
+
+AI can point out possible obvious defects, such as missing branches, empty data handling, error handling, or return-value mistakes.
+
+It is also useful for cases that are easy to miss. Instead of only looking at the normal case, AI can suggest cases such as empty input, failed communication, missing permissions, or missing data.
+
+AI may also provide suggested fixes. Instead of only saying "there is a problem," it can show an example of how the code could be changed, which makes the feedback easier to learn from.
+
+### Limits
+
+AI review has limits.
+
+It is especially weak at things that cannot be judged from code alone. Business priority, customer commitments, product direction, and team-specific context are difficult to infer from changed code alone.
+
+AI comments are not always correct. AI may flag code that is actually fine, miss important risks, or suggest a fix that does not match the existing design or project direction.
+
+When using AI review, keep these principles in mind:
+
+- Do not accept AI comments blindly
+- Check the reason behind each comment
+- Decide whether the comment fits the project context
+- Ask a human when the judgment is unclear
+- Remember that the implementer and team keep final responsibility
+
+AI code review is a powerful way to improve review quality, but it is not a place to delegate judgment completely. Use AI feedback as input, then improve the code with human intent and responsibility.
