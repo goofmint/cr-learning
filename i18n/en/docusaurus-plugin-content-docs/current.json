@@ -3,12 +3,20 @@
     "message": "Next",
     "description": "The label for version current"
   },
-  "sidebar.tutorialSidebar.category.Introduction": {
-    "message": "Introduction",
-    "description": "The label for category Introduction in sidebar tutorialSidebar"
-  },
   "sidebar.tutorialSidebar.doc.intro": {
     "message": "Introduction",
     "description": "The label for the intro doc in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.理解編": {
+    "message": "Foundations",
+    "description": "The label for category 理解編 in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.実践編": {
+    "message": "Practice",
+    "description": "The label for category 実践編 in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.振り返り・発展編": {
+    "message": "Reflection and Next Steps",
+    "description": "The label for category 振り返り・発展編 in sidebar tutorialSidebar"
   }
 }

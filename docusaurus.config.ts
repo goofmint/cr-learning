@@ -86,7 +86,7 @@ const config: Config = {
           title: 'Learning',
           items: [
             {
-              label: 'Start here',
+              label: 'はじめに',
               to: '/docs/intro',
             },
           ],
@@ -95,16 +95,16 @@ const config: Config = {
           title: 'Topics',
           items: [
             {
+              label: 'コードレビュー',
+              to: '/docs/code-review',
+            },
+            {
+              label: 'AIコードレビュー',
+              to: '/docs/ai-code-review',
+            },
+            {
               label: 'CodeRabbit',
-              to: '/docs/intro',
-            },
-            {
-              label: 'Git and GitHub',
-              to: '/docs/intro',
-            },
-            {
-              label: 'Pull request reviews',
-              to: '/docs/intro',
+              to: '/docs/coderabbit',
             },
           ],
         },
@@ -112,8 +112,8 @@ const config: Config = {
           title: 'Practice',
           items: [
             {
-              label: 'Bookmark app demo',
-              to: '/docs/intro',
+              label: 'Bookmark Inbox',
+              to: '/docs/application-overview',
             },
           ],
         },
