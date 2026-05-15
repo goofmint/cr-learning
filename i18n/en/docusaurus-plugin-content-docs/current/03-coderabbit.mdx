@@ -7,28 +7,144 @@ title: What is CodeRabbit?
 
 ## Goal
 
-Understand how CodeRabbit provides AI reviews on Pull Requests and supports the developer review experience.
+Understand what CodeRabbit is and what to focus on when learning AI code review.
 
 ## CodeRabbit Overview
 
-TODO: Describe CodeRabbit as an AI code review service that provides summaries and review comments on Pull Requests.
+CodeRabbit is a service that uses AI to support code review and development work.
 
-## GitHub Integration
+Its main feature is pull request review (Pull Request, hereafter PR). When you create a PR, CodeRabbit reads the changes and provides summaries and review comments. Before a human reviewer checks the code, CodeRabbit can help you notice possible bugs, missing tests, and hard-to-understand implementation.
 
-TODO: Explain the basic flow of working with GitHub repositories and Pull Requests.
+CodeRabbit can be used not only on PRs, but also from editors such as VS Code and from the CLI. This makes it useful for self-AI review because you can ask AI to check your local changes before opening a PR.
 
-## Pull Request-Based Workflow
+The main supported Git management services are [GitHub](https://docs.coderabbit.ai/platforms/github-com), [GitLab](https://docs.coderabbit.ai/platforms/gitlab-com), [Azure DevOps](https://docs.coderabbit.ai/platforms/azure-devops), and [Bitbucket](https://docs.coderabbit.ai/platforms/bitbucket-cloud).
 
-TODO: Explain that review is based on Pull Request diffs and can run again for additional commits.
+## Core Products
 
-## Types of Review Comments
+CodeRabbit has the following main features.
 
-TODO: Explain how to read Summary, Inline Review, and Suggested Changes.
+### Review
+
+Review is the core CodeRabbit feature. You can learn more in [Pull Request Reviews](https://docs.coderabbit.ai/overview/pull-request-review). It can be used mainly in the following places.
+
+- **PR review**  
+  When you create a PR on GitHub or another supported service, CodeRabbit checks the changes and posts summaries and review comments. If you push additional commits, it can review the newly changed parts again.
+
+- **[VS Code review](https://docs.coderabbit.ai/ide)**  
+  You can review changes in your editor before they are committed. This helps you find issues before opening a PR.
+
+- **[CLI review](https://docs.coderabbit.ai/cli)**  
+  You can run CodeRabbit review from the terminal. This is useful before committing or when you want to include review in a CI workflow.
+
+In this course, we focus first on PR review. The goal is to experience what kinds of comments appear on a PR and how to read, judge, and respond to them.
+
+### CodeRabbit Plan
+
+CodeRabbit Plan helps create a plan before implementation. You can learn more in [CodeRabbit Plan](https://docs.coderabbit.ai/plan).
+
+Based on a task, Issue, specification, or design material, it organizes which files should be checked, what order the work should follow, and what points need attention. It is helpful to think of it as a feature that prepares a plan you can pass to AI coding tools.
+
+This chapter does not cover it in detail, but it is a feature for organizing the work before asking AI to write code.
+
+### CodeRabbit Agent for Slack
+
+CodeRabbit Agent for Slack lets you request investigation, planning, and code changes from Slack. You can learn more in [CodeRabbit Agent for Slack](https://docs.coderabbit.ai/slack-agent).
+
+For example, in a team conversation, you can ask it to investigate a bug, think through an implementation approach, or create a PR. It can use repository information, Issues, and documents while supporting a broader development workflow.
+
+In this course, we first prioritize understanding the review feature. For now, it is enough to understand CodeRabbit Agent for Slack as a feature that supports development work beyond review.
+
+## Basic PR Review Flow
+
+CodeRabbit PR review works by connecting with repositories on GitHub and other supported services.
+
+The basic flow is:
+
+1. A developer creates a PR
+2. CodeRabbit reads the changes
+3. A PR summary and review comments are posted
+4. The implementer reads the comments and makes changes if needed
+5. If additional commits are added, CodeRabbit reviews the changed parts again
+
+CodeRabbit comments are not the final decision. The implementer and human reviewer use AI comments as input and decide whether something really needs to be changed or whether another approach is better.
+
+## How to Read Review Comments
+
+In CodeRabbit reviews, you mainly check the following information.
+
+- **Summary**  
+  A short explanation of what changed in the PR. It helps reviewers understand the overall change.
+
+- **Review comments**  
+  Comments that point out concerns or things to check in the changed code. Do not accept every comment automatically. Read the reason and decide whether it applies.
+
+- **Suggested fixes**  
+  Some comments include concrete examples of how to change the code. These are useful, but you still need to check whether they fit the project direction and existing code.
+
+For beginners, the important thing is not the number of comments. The important thing is to understand why a comment was made and decide whether the change is necessary.
+
+### CodeRabbit Review
+
+CodeRabbit Review is a review screen that makes PR changes easier to inspect. You can learn more in [CodeRabbit Review](https://docs.coderabbit.ai/pr-reviews/change-stack).
+
+In a normal PR screen, reviewers often read changed files one by one. CodeRabbit Review organizes related changes together so the review order is easier to follow.
+
+When a PR changes many files, it can be hard to know where to start. CodeRabbit Review helps you move through that kind of PR step by step.
 
 ## What Are Learnings?
 
-TODO: Explain the idea of reflecting repository and team context in reviews.
+[Learnings](https://docs.coderabbit.ai/knowledge-base/learnings) are a way to help CodeRabbit remember a team's review preferences.
+
+For example, you can describe, in natural language, that a certain style should be preferred for a type of file or that a repository should focus on a certain review perspective. CodeRabbit can use that information as context for future reviews.
+
+However, Learnings are not a complete replacement for rules. Formal team rules and required standards should still be managed clearly in documentation or configuration files. Think of Learnings as a way to reflect preferences and extra guidance that appear through review conversations.
 
 ## Customizing Review Instructions
 
-TODO: Explain how project rules and review perspectives can adjust the quality of AI review.
+CodeRabbit can adjust review perspectives for each project.
+
+The configuration file is [`.coderabbit.yaml`](https://docs.coderabbit.ai/getting-started/yaml-configuration). You can also change organization-level and repository-level settings from the [dashboard](https://docs.coderabbit.ai/guides/configuration-overview).
+
+You do not need detailed settings from the beginning. A practical approach is to first try normal PR review, then gradually adjust settings when you notice that you want CodeRabbit to focus more on something or stop making a repeated comment.
+
+## How CodeRabbit Improves Review Quality
+
+CodeRabbit reviews not only changed code, but also surrounding information.
+
+For example, it can use the following kinds of information during review.
+
+- **[Path Instructions](https://docs.coderabbit.ai/configuration/path-instructions)**  
+  Change review perspectives for specific files or directories.
+
+- **[MCP servers](https://docs.coderabbit.ai/knowledge-base/mcp-context)**  
+  Refer to internal documents and organization-specific rules.
+
+- **[Issue integrations](https://docs.coderabbit.ai/integrations/issue-trackers)**  
+  Check requirements and background written in Issues.
+
+- **[Web Search](https://docs.coderabbit.ai/knowledge-base/web-search)**  
+  Check recent external documentation and public information.
+
+- **[Linters and SAST](https://docs.coderabbit.ai/tools)**  
+  Run static analysis and security-oriented checks.
+
+- **[Learnings](https://docs.coderabbit.ai/knowledge-base/learnings)**  
+  Reflect team review preferences in future reviews.
+
+By combining multiple kinds of information, CodeRabbit can find issues that are difficult to notice by looking only at changed lines.
+
+## Usage Characteristics
+
+CodeRabbit is mainly available through fixed-price plans. Available features and review limits differ by plan, and you can check them in [Plans and pricing](https://docs.coderabbit.ai/management/plans).
+
+For security, CodeRabbit explains support for SSL, SOC 2 Type II, and a policy of not using customer code to train language models. You can check details in the [CodeRabbit features page](https://docs.coderabbit.ai/about/features) and the [Trust Center](https://trust.coderabbit.ai/).
+
+## What to Remember
+
+In this course, we use CodeRabbit as a service where AI helps with the first pass of review.
+
+Remember these three points:
+
+- CodeRabbit can run AI review on PRs, in VS Code, and from the CLI
+- AI comments are not the final decision; they are material for checking and learning
+- CodeRabbit Plan and CodeRabbit Agent for Slack support development work before and after review

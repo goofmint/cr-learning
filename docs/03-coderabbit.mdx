@@ -7,28 +7,144 @@ title: CodeRabbitとは
 
 ## この章の目的
 
-CodeRabbitがPull Request上でどのようにAIレビューを提供し、開発者のレビュー体験を支援するのかを理解します。
+CodeRabbitがどのようなサービスかを知り、AIコードレビューの学習でどこに注目すればよいかを理解します。
 
 ## CodeRabbitの概要
 
-TODO: CodeRabbitを、Pull Requestに対してレビューコメントや要約を提供するAIコードレビューサービスとして説明する。
+CodeRabbitは、AIを使ってコードレビューや開発作業を支援するサービスです。
 
-## GitHubとの連携
+中心になる機能は、プルリクエスト（Pull Request。以下PR）のレビューです。PRを作成すると、CodeRabbitが変更内容を読み取り、要約やレビューコメントを出します。人間のレビュアーが確認する前に、見落としやすい不具合、テスト不足、分かりにくい実装などに気づくきっかけを作れます。
 
-TODO: GitHubリポジトリやPull Requestと連携して動作する基本的な流れを説明する。
+CodeRabbitはPRだけでなく、VS CodeなどのエディタやCLIからも使えます。PRを作る前に、自分の手元の変更をAIに確認してもらえるため、セルフAIレビューにも使いやすいサービスです。
 
-## Pull Requestベースで動く仕組み
+対応している主なGit管理サービスは、[GitHub](https://docs.coderabbit.ai/platforms/github-com)、[GitLab](https://docs.coderabbit.ai/platforms/gitlab-com)、[Azure DevOps](https://docs.coderabbit.ai/platforms/azure-devops)、[Bitbucket](https://docs.coderabbit.ai/platforms/bitbucket-cloud)です。
 
-TODO: Pull Requestの差分をもとにレビューが行われること、追加コミットに対して再レビューできることを説明する。
+## 基本プロダクト
 
-## レビューコメントの種類
+CodeRabbitには、大きく分けて次の機能があります。
 
-TODO: Summary、Inline Review、Suggested Changesの違いと読み方を整理する。
+### レビュー
+
+レビューは、CodeRabbitの基本となる機能です。詳しくは[Pull Request Reviews](https://docs.coderabbit.ai/overview/pull-request-review)で確認できます。主に次の場所で使えます。
+
+- **PRレビュー**  
+  GitHubなどでPRを作成すると、CodeRabbitが変更内容を確認し、要約やレビューコメントを投稿します。追加のコミットを push した場合も、新しく変わった部分を確認できます。
+
+- **[VS Codeでのレビュー](https://docs.coderabbit.ai/ide)**  
+  エディタ上で、まだコミットしていない変更を確認できます。PRを作る前に気になる点を見つけられます。
+
+- **[CLIでのレビュー](https://docs.coderabbit.ai/cli)**  
+  ターミナルからCodeRabbitのレビューを実行できます。コミット前やCIの流れに組み込みたい場合に使えます。
+
+この教材では、まずPRレビューを中心に扱います。PR上でどのようなコメントが出るのか、どのように受け止めて修正するのかを体験するためです。
+
+### CodeRabbit Plan
+
+CodeRabbit Planは、実装前の計画を作る機能です。詳しくは[CodeRabbit Plan](https://docs.coderabbit.ai/plan)で確認できます。
+
+やりたいこと、Issue、仕様書、デザイン資料などをもとに、どのファイルを確認すべきか、どの順番で実装すべきか、どのような注意点があるかを整理します。AIコーディングに渡しやすい形の計画を作るための機能と考えると分かりやすいです。
+
+この章では詳しく扱いませんが、AIにいきなりコードを書かせる前に、作業の進め方を整理するための機能です。
+
+### CodeRabbit Agent for Slack
+
+CodeRabbit Agent for Slackは、Slack上で調査、計画、コード変更などを依頼できる機能です。詳しくは[CodeRabbit Agent for Slack](https://docs.coderabbit.ai/slack-agent)で確認できます。
+
+たとえば、チームの会話の中で「この不具合を調べて」「実装方針を考えて」「PRを作って」といった依頼を行えます。リポジトリ、Issue、ドキュメントなどの情報を使いながら作業を進める、より広い開発支援の機能です。
+
+この教材では、まずレビュー機能の理解を優先します。CodeRabbit Agent for Slackは、レビューよりも広い範囲の作業を支援する機能として押さえておけば十分です。
+
+## PRレビューの基本的な流れ
+
+CodeRabbitのPRレビューは、GitHubなどのリポジトリと連携して動きます。
+
+基本的な流れは次のとおりです。
+
+1. 開発者がPRを作成する
+2. CodeRabbitが変更内容を読む
+3. PRの要約やレビューコメントが投稿される
+4. 実装者がコメントを確認し、必要に応じて修正する
+5. 追加コミットがある場合は、変更された部分を再度確認する
+
+CodeRabbitのコメントは、最終判断ではありません。AIからの指摘を材料にして、実装者と人間のレビュアーが「本当に直すべきか」「別の方法がよいか」を判断します。
+
+## レビューコメントの読み方
+
+CodeRabbitのレビューでは、主に次のような情報を確認します。
+
+- **要約**  
+  PRで何が変わったのかを短く整理したものです。レビュアーが全体像をつかむ助けになります。
+
+- **レビューコメント**  
+  変更されたコードに対して、気になる点や確認すべき点を示すコメントです。すべてをそのまま受け入れるのではなく、理由を読んで判断します。
+
+- **修正案**  
+  コメントによっては、具体的な直し方が提示されることがあります。便利ですが、プロジェクトの方針や既存コードに合っているかは確認が必要です。
+
+初学者にとって大切なのは、コメントの数だけを見ることではありません。なぜその指摘が出ているのかを読み、必要な修正かどうかを考えることです。
+
+### CodeRabbit Review
+
+CodeRabbit Reviewは、PRの変更を確認しやすくするためのレビュー画面です。詳しくは[CodeRabbit Review](https://docs.coderabbit.ai/pr-reviews/change-stack)で確認できます。
+
+通常のPR画面では、ファイルの一覧から順番に変更を読むことが多くなります。CodeRabbit Reviewでは、関連する変更をまとまりとして整理し、読む順番が分かりやすくなるように表示します。
+
+変更ファイルが多いPRでは、どこから読めばよいか分からなくなりがちです。CodeRabbit Reviewは、そのようなPRを段階的に読み進めるための補助画面と考えるとよいです。
 
 ## Learningsとは何か
 
-TODO: リポジトリやチームの文脈をレビューに反映するための学習・記憶の考え方を説明する。
+[Learnings](https://docs.coderabbit.ai/knowledge-base/learnings)は、CodeRabbitにチームのレビュー方針を覚えさせる仕組みです。
+
+たとえば、「この種類のファイルではこの書き方を優先する」「このリポジトリではこの観点を重視する」といった内容を、自然な文章で伝えられます。CodeRabbitは、その内容を今後のレビューの参考にします。
+
+ただし、Learningsは万能ではありません。チームの正式なルールや必ず守るべき基準は、ドキュメントや設定ファイルとして明確に管理することが大切です。Learningsは、レビューのやり取りの中で見えてきた好みや補足ルールを反映する仕組みとして理解するとよいです。
 
 ## レビュー指示のカスタマイズ
 
-TODO: プロジェクトのルールやレビュー観点を明示することで、AIレビューの質を調整できることを説明する。
+CodeRabbitは、プロジェクトに合わせてレビューの観点を調整できます。
+
+設定ファイルとして使うのは [`.coderabbit.yaml`](https://docs.coderabbit.ai/getting-started/yaml-configuration) です。また、[管理画面](https://docs.coderabbit.ai/guides/configuration-overview)から組織単位やリポジトリ単位で設定を変更することもできます。
+
+最初から細かく設定する必要はありません。まずは通常のPRレビューを体験し、「この観点をもっと見てほしい」「この指摘は毎回不要」と感じたら、少しずつ調整していくのが現実的です。
+
+## レビュー精度を高める仕組み
+
+CodeRabbitは、変更されたコードだけでなく、周辺の情報も使ってレビューします。
+
+たとえば、次のような情報をレビューに反映できます。
+
+- **[パスインストラクション](https://docs.coderabbit.ai/configuration/path-instructions)**  
+  ファイルやディレクトリごとにレビュー観点を変えられます。
+
+- **[MCPサーバー](https://docs.coderabbit.ai/knowledge-base/mcp-context)**  
+  社内ドキュメントや組織内の規約を参照できます。
+
+- **[Issue連携](https://docs.coderabbit.ai/integrations/issue-trackers)**  
+  Issueに書かれた要件や背景を確認できます。
+
+- **[Web Search](https://docs.coderabbit.ai/knowledge-base/web-search)**  
+  最新の外部ドキュメントや公開情報を確認できます。
+
+- **[LinterやSAST](https://docs.coderabbit.ai/tools)**  
+  静的解析やセキュリティ観点の確認を行えます。
+
+- **[Learnings](https://docs.coderabbit.ai/knowledge-base/learnings)**  
+  チームのレビュー方針を今後のレビューに反映できます。
+
+このように複数の情報を組み合わせることで、単に変更行を見るだけでは気づきにくい問題を見つけやすくなります。
+
+## 利用時の特徴
+
+CodeRabbitは、定額のプランを中心に利用できます。プランによって使える機能やレビュー回数の上限は異なりますが、[Plans and pricing](https://docs.coderabbit.ai/management/plans)で確認できます。
+
+セキュリティ面では、SSLによる通信、SOC 2 Type II、顧客コードを言語モデルの学習に使わない方針などが説明されています。詳しくは[CodeRabbitの紹介ページ](https://docs.coderabbit.ai/about/features)や[Trust Center](https://trust.coderabbit.ai/)で確認できます。
+
+## この章で押さえること
+
+この教材では、CodeRabbitを「AIがレビューの下読みを手伝うサービス」として使います。
+
+まず覚えておきたい点は次の3つです。
+
+- CodeRabbitは、PR、VS Code、CLIでAIレビューを実行できる
+- AIのコメントは最終判断ではなく、確認と学習の材料である
+- PlanやCodeRabbit Agent for Slackは、レビュー前後の開発作業を支援する機能である
