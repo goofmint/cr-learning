@@ -1,6 +1,12 @@
 {
+  "homepage.hero.unofficialBadge": {
+    "message": "Unofficial learning site"
+  },
   "homepage.hero.subtitle": {
-    "message": "A learning site for CodeRabbit and Pull Request reviews"
+    "message": "Learn practical Pull Request review and AI code review using CodeRabbit as the example tool."
+  },
+  "homepage.hero.disclaimer": {
+    "message": "This is not the official CodeRabbit website. It is independent, unofficial learning content and is not affiliated with CodeRabbit."
   },
   "homepage.hero.cta": {
     "message": "Start learning"
@@ -12,10 +18,10 @@
     "message": "Learn the basics of CodeRabbit and how to use review assistance on Pull Requests."
   },
   "homepage.features.git.title": {
-    "message": "Git and GitHub"
+    "message": "Git Platforms"
   },
   "homepage.features.git.description": {
-    "message": "Review the surrounding practices needed for code review, including branches, commits, and Pull Requests."
+    "message": "Review the shared review basics across supported platforms, including branches, commits, and Pull Requests."
   },
   "homepage.features.bookmark.title": {
     "message": "Bookmark App"

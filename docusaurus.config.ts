@@ -5,8 +5,8 @@ import type * as Preset from '@docusaurus/preset-classic';
 // This runs in Node.js - Don't use client-side code here (browser APIs, JSX...)
 
 const config: Config = {
-  title: 'CodeRabbit Learning',
-  tagline: 'CodeRabbitとPRレビューを学ぶラーニングサイト',
+  title: 'PR Review Learning Lab',
+  tagline: 'CodeRabbitを題材にした非公式のPRレビュー教材',
   favicon: 'img/favicon.ico',
 
   // Future flags, see https://docusaurus.io/docs/api/docusaurus-config#future
@@ -65,7 +65,7 @@ const config: Config = {
       respectPrefersColorScheme: true,
     },
     navbar: {
-      title: 'CodeRabbit Learning',
+      title: 'PR Review Learning Lab',
       items: [
         {
           type: 'docSidebar',
@@ -118,7 +118,7 @@ const config: Config = {
           ],
         },
       ],
-      copyright: `Copyright © ${new Date().getFullYear()} CodeRabbit Learning.`,
+      copyright: `Copyright © ${new Date().getFullYear()} PR Review Learning Lab. This is an unofficial learning site and is not affiliated with CodeRabbit.`,
     },
     prism: {
       theme: prismThemes.github,

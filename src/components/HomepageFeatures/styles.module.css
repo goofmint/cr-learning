@@ -13,24 +13,21 @@
   padding: 1.5rem;
 }
 
-.featureBadge {
+.featureIcons {
   align-items: center;
-  background: var(--coderabbit-orange);
-  border-radius: 6px;
-  color: var(--coderabbit-ink);
-  display: inline-flex;
-  font-weight: 700;
-  height: 2.25rem;
-  justify-content: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
   margin-bottom: 1rem;
-  min-width: 2.25rem;
-  padding: 0 0.55rem;
+  min-height: 2.4rem;
 }
 
-.features :global(.col:nth-child(2)) .featureBadge {
-  background: var(--coderabbit-green);
-}
-
-.features :global(.col:nth-child(3)) .featureBadge {
-  background: var(--coderabbit-purple);
+.featureIcons img {
+  background: #fff;
+  border: 1px solid rgba(23, 18, 15, 0.12);
+  border-radius: 6px;
+  height: 2.35rem;
+  max-width: 7.5rem;
+  object-fit: contain;
+  padding: 0.42rem 0.55rem;
 }
