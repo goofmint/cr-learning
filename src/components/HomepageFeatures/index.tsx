@@ -22,7 +22,7 @@ const FeatureList: FeatureItem[] = [
     icons: [{src: '/img/coderabbit.svg', alt: 'CodeRabbit'}],
     description: (
       <Translate id="homepage.features.coderabbit.description">
-        CodeRabbitの基本と、Pull Request上でのレビュー支援の受け方を学びます。
+        CodeRabbitの基本と、PR上でのレビュー支援の受け方を学びます。
       </Translate>
     ),
   },
@@ -37,7 +37,7 @@ const FeatureList: FeatureItem[] = [
     ],
     description: (
       <Translate id="homepage.features.git.description">
-        ブランチ、コミット、Pull Requestなど、対応プラットフォームで共通するレビューの基本を整理します。
+        ブランチ、コミット、PRなど、対応プラットフォームで共通するレビューの基本を整理します。
       </Translate>
     ),
   },

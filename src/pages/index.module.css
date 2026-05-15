@@ -21,19 +21,6 @@
   margin-bottom: 0.7rem;
 }
 
-.unofficialBadge {
-  background: rgba(255, 250, 247, 0.9);
-  border: 1px solid rgba(23, 18, 15, 0.18);
-  border-radius: 6px;
-  color: var(--coderabbit-ink);
-  display: inline-flex;
-  font-size: 0.92rem;
-  font-weight: 700;
-  letter-spacing: 0;
-  margin: 0.5rem 0 1rem;
-  padding: 0.35rem 0.65rem;
-}
-
 .disclaimer {
   color: rgba(23, 18, 15, 0.8);
   font-size: 0.98rem;
