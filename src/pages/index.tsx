@@ -18,14 +18,9 @@ function HomepageHeader() {
         <Heading as="h1" className="hero__title">
           {siteConfig.title}
         </Heading>
-        <div className={styles.unofficialBadge}>
-          <Translate id="homepage.hero.unofficialBadge">
-            非公式の学習サイト
-          </Translate>
-        </div>
         <p className="hero__subtitle">
           <Translate id="homepage.hero.subtitle">
-            CodeRabbitを題材に、Pull RequestレビューとAIコードレビューの実践を学ぶ教材です。
+            CodeRabbitを題材に、PRレビューとAIコードレビューの実践を学ぶ教材です。
           </Translate>
         </p>
         <p className={styles.disclaimer}>

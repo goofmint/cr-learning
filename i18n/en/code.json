@@ -1,9 +1,6 @@
 {
-  "homepage.hero.unofficialBadge": {
-    "message": "Unofficial learning site"
-  },
   "homepage.hero.subtitle": {
-    "message": "Learn practical Pull Request review and AI code review using CodeRabbit as the example tool."
+    "message": "Learn practical PR review and AI code review using CodeRabbit as the example tool."
   },
   "homepage.hero.disclaimer": {
     "message": "This is not the official CodeRabbit website. It is independent, unofficial learning content and is not affiliated with CodeRabbit."
@@ -15,18 +12,18 @@
     "message": "CodeRabbit"
   },
   "homepage.features.coderabbit.description": {
-    "message": "Learn the basics of CodeRabbit and how to use review assistance on Pull Requests."
+    "message": "Learn the basics of CodeRabbit and how to use review assistance on PRs."
   },
   "homepage.features.git.title": {
     "message": "Git Platforms"
   },
   "homepage.features.git.description": {
-    "message": "Review the shared review basics across supported platforms, including branches, commits, and Pull Requests."
+    "message": "Review the shared review basics across supported platforms, including branches, commits, and PRs."
   },
   "homepage.features.bookmark.title": {
     "message": "Bookmark App"
   },
   "homepage.features.bookmark.description": {
-    "message": "Practice Pull Request review through the development experience of a personal bookmark application."
+    "message": "Practice PR review through the development experience of a personal bookmark application."
   }
 }
