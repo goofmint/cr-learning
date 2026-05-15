@@ -11,15 +11,26 @@ import styles from './index.module.css';
 
 function HomepageHeader() {
   const {siteConfig} = useDocusaurusContext();
+
   return (
     <header className={clsx('hero hero--primary', styles.heroBanner)}>
       <div className="container">
         <Heading as="h1" className="hero__title">
           {siteConfig.title}
         </Heading>
+        <div className={styles.unofficialBadge}>
+          <Translate id="homepage.hero.unofficialBadge">
+            非公式の学習サイト
+          </Translate>
+        </div>
         <p className="hero__subtitle">
           <Translate id="homepage.hero.subtitle">
-            CodeRabbitとPRレビューを学ぶラーニングサイト
+            CodeRabbitを題材に、Pull RequestレビューとAIコードレビューの実践を学ぶ教材です。
+          </Translate>
+        </p>
+        <p className={styles.disclaimer}>
+          <Translate id="homepage.hero.disclaimer">
+            このサイトはCodeRabbit公式サイトではなく、CodeRabbit社とは関係のない非公式の学習コンテンツです。
           </Translate>
         </p>
         <div className={styles.buttons}>
@@ -39,7 +50,7 @@ export default function Home(): ReactNode {
   return (
     <Layout
       title={siteConfig.title}
-      description="CodeRabbit, git, GitHub, pull requests, and code review learning site.">
+      description="Unofficial learning site for Pull Request reviews, AI code review, and CodeRabbit.">
       <HomepageHeader />
       <main>
         <HomepageFeatures />

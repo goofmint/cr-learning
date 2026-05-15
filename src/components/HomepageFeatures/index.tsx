@@ -2,12 +2,16 @@ import type {ReactNode} from 'react';
 import clsx from 'clsx';
 import Heading from '@theme/Heading';
 import Translate from '@docusaurus/Translate';
+import useBaseUrl from '@docusaurus/useBaseUrl';
 import styles from './styles.module.css';
 
 type FeatureItem = {
   title: string;
   titleId: string;
-  badge: string;
+  icons?: {
+    src: string;
+    alt: string;
+  }[];
   description: ReactNode;
 };
 
@@ -15,7 +19,7 @@ const FeatureList: FeatureItem[] = [
   {
     title: 'CodeRabbit',
     titleId: 'homepage.features.coderabbit.title',
-    badge: 'CR',
+    icons: [{src: '/img/coderabbit.svg', alt: 'CodeRabbit'}],
     description: (
       <Translate id="homepage.features.coderabbit.description">
         CodeRabbitの基本と、Pull Request上でのレビュー支援の受け方を学びます。
@@ -23,19 +27,24 @@ const FeatureList: FeatureItem[] = [
     ),
   },
   {
-    title: 'Git and GitHub',
+    title: 'Git管理サービス',
     titleId: 'homepage.features.git.title',
-    badge: 'GH',
+    icons: [
+      {src: '/img/github.svg', alt: 'GitHub'},
+      {src: '/img/gitlab.svg', alt: 'GitLab'},
+      {src: '/img/bitbucket.svg', alt: 'Bitbucket'},
+      {src: '/img/azure-devops.svg', alt: 'Azure DevOps'},
+    ],
     description: (
       <Translate id="homepage.features.git.description">
-        ブランチ、コミット、Pull Requestなど、レビューに必要な周辺技術を整理します。
+        ブランチ、コミット、Pull Requestなど、対応プラットフォームで共通するレビューの基本を整理します。
       </Translate>
     ),
   },
   {
     title: 'Bookmark App',
     titleId: 'homepage.features.bookmark.title',
-    badge: 'APP',
+    icons: [{src: '/img/bookmark.svg', alt: 'Bookmark App'}],
     description: (
       <Translate id="homepage.features.bookmark.description">
         個人用ブックマークアプリの開発体験を通して、実践的なPRレビューを学びます。
@@ -44,11 +53,23 @@ const FeatureList: FeatureItem[] = [
   },
 ];
 
-function Feature({title, titleId, badge, description}: FeatureItem) {
+function Feature({title, titleId, icons, description}: FeatureItem) {
+  const baseUrl = useBaseUrl('/');
+
   return (
     <div className={clsx('col col--4')}>
       <div className={styles.featureCard}>
-        <div className={styles.featureBadge}>{badge}</div>
+        {icons && (
+          <div className={styles.featureIcons}>
+            {icons.map((icon) => (
+              <img
+                key={icon.alt}
+                src={`${baseUrl}${icon.src.replace(/^\//, '')}`}
+                alt={icon.alt}
+              />
+            ))}
+          </div>
+        )}
         <Heading as="h3">
           <Translate id={titleId}>{title}</Translate>
         </Heading>
