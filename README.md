@@ -11,10 +11,18 @@ yarn
 ## Local Development
 
 ```bash
-yarn start
+npm run start
 ```
 
 This command starts a local development server and opens up a browser window. Most changes are reflected live without having to restart the server.
+
+For the English locale, start the localized dev server:
+
+```bash
+npm run start:en
+```
+
+Then open `http://localhost:3000/en/`.
 
 ## Build
 
