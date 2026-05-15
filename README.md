@@ -34,16 +34,16 @@ This command generates static content into the `build` directory and can be serv
 
 ## Deployment
 
-Using SSH:
+This repository is configured for GitHub Pages at:
+
+- `https://goofmint.github.io/cr-learning/`
+
+Merges to `main` deploy automatically through GitHub Actions. In the repository settings, set **Pages > Build and deployment > Source** to **GitHub Actions**.
+
+You can also run the deployment manually from the **Actions** tab by selecting **Deploy to GitHub Pages** and then **Run workflow**.
+
+For a local production build:
 
 ```bash
-USE_SSH=true yarn deploy
+npm run build
 ```
-
-Not using SSH:
-
-```bash
-GIT_USER=<Your GitHub username> yarn deploy
-```
-
-If you are using GitHub pages for hosting, this command is a convenient way to build the website and push to the `gh-pages` branch.
