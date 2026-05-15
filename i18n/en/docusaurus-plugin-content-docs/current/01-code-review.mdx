@@ -9,22 +9,119 @@ title: What is Code Review?
 
 Understand code review as more than bug finding: it supports quality, design, knowledge sharing, and team development.
 
+## What Is Code Review?
+
+Code review is the practice of having someone other than the author read and check a code change.
+
+In a review, the reviewer reads the code and checks whether the change matches its purpose, is easy to understand, can be changed later, and is unlikely to negatively affect other features.
+
+For example, if someone adds a feature to save bookmarks, a review may check points like these:
+
+- Whether the change satisfies the business requirements and acceptance criteria
+- Whether error cases have been considered
+- Whether variable and function names communicate their meaning
+- Whether similar logic is duplicated
+- Whether the code is likely to become fragile when changed later
+
+In short, code review is a team activity for keeping code safe to grow over time.
+
 ## Why Do Code Reviews?
 
-TODO: Explain code review in terms of quality assurance, validating changes, and maintainability.
+Code review has three main purposes.
 
-## Review Value Beyond Bug Detection
+First, it improves the quality of a change. A second person can notice missed considerations, input handling issues, exception handling gaps, or inconsistencies with the existing code.
 
-TODO: Cover readability, design decisions, operational risk, and future changeability.
+Second, it validates whether the change is appropriate. Even if the code works, it may not match the business requirements or acceptance criteria. In review, the team checks whether the implementation actually solves the problem it is meant to solve.
+
+Third, it keeps the codebase maintainable. Software is not written once and then left alone. Teams continue to add features and fix problems, so the code needs to be readable, changeable, and aligned with the organization's coding standards.
+
+## Code Review and Testing Are Different
+
+When people hear "code review," they often think of finding bugs. However, bug detection is primarily the role of testing.
+
+It is dangerous to assume that code has no defects just because it passed review. Tests verify behavior by actually checking inputs and outputs, UI interactions, API responses, and error cases. Review, on the other hand, checks the code by reading it: whether the change matches its purpose, whether there are risks that are easy to miss, and whether the code is maintainable.
+
+Review and testing do not replace each other. Review checks design and readability, while tests check behavior. Together, they increase confidence in a change.
+
+## What to Check in Code Review
+
+In code review, you usually check the following perspectives:
+
+- **Readability**  
+  Can other people read and understand the code?
+
+- **Design**  
+  Are responsibilities separated clearly, and is the logic in a natural place?
+
+- **Standards and consistency**  
+  Does the code follow internal or organizational coding standards and existing code style?
+
+- **Requirement fit**  
+  Does the change satisfy the business requirements, specification, and acceptance criteria?
+
+- **Integration points**  
+  When a backend and frontend or app work together, is the required data sent and received correctly?
+
+- **Impact scope**  
+  Could this change break other features?
+
+- **Operational risk**  
+  Are errors and unexpected inputs handled appropriately?
+
+- **Changeability**  
+  Will future feature additions or fixes be easy?
+
+As a beginner, you do not need to check everything perfectly from the start. A good first step is to ask, "Would someone else have trouble understanding this code?"
 
 ## Review as Knowledge Sharing
 
-TODO: Explain how review shares specifications, design intent, and implementation direction across the team.
+Code review is not only a place to receive comments. It is also a place where team members learn from each other.
 
-## How Code Review Changes in the AI Era
+Through review discussions, the team shares knowledge such as:
 
-TODO: Explain how review targets and review perspectives change when AI writes code.
+- Feature specifications and background
+- Why a particular design was chosen
+- Common patterns used in the project
+- Implementation patterns to avoid
+- Things to watch for in tests and error handling
 
-## AI-Generated Code and Review Debt
+The author can learn perspectives they did not notice on their own. The reviewer also deepens their understanding of the product and codebase by reading the change.
 
-TODO: Explain the risk of accepting AI-generated code without understanding it sufficiently.
+In this way, review turns individual work into shared team knowledge.
+
+## Main Review Perspectives
+
+It is easier to review code when you separate the perspectives instead of reading vaguely.
+
+| Perspective | What to Check |
+| --- | --- |
+| Purpose | Whether the change matches its purpose, business requirements, and acceptance criteria |
+| Behavior | Whether normal and error cases can be verified with tests |
+| Readability | Whether names, control flow, and comments are easy to understand |
+| Standards | Whether the code follows internal or organizational coding standards |
+| Maintainability | Whether the structure can handle future changes |
+| Integration | Whether data transfer between the backend and frontend or app works correctly |
+| Tests | Whether important behavior is covered by tests |
+| Impact scope | Whether existing features may be affected |
+
+It is also important not to focus only on small formatting details. Indentation and naming matter, but first check whether the change matches the requirements, is not fragile, and can be understood by future readers.
+
+## A Reference for Code Review Principles
+
+A useful reference for learning how to think about code review is Google's Engineering Practices, especially the [Code Review Guidelines](https://google.github.io/eng-practices/review/).
+
+The guidelines explain that the main purpose of code review is to improve the overall health of the codebase over time. They also emphasize that reviewers should not block changes until the code is perfect. Instead, reviewers should consider whether the change improves maintainability, readability, and understandability overall.
+
+For beginners, the important point is not to treat review as a search for small mistakes. It is an activity for moving changes forward while gradually improving the codebase.
+
+## Review Is a Collaborative Activity
+
+Code review is not about blaming someone for mistakes. It is a team activity for making the code better.
+
+Review comments are easier to act on when they explain why something matters and how it might be improved.
+
+For example, instead of only writing "This is not good," it is more helpful to write, "This function has multiple responsibilities, so separating the save logic from the display formatting logic would make it easier to read."
+
+The author also does not need to treat comments as personal criticism. If something is unclear, they can ask questions. If needed, they can explain the intent behind the implementation.
+
+Good review improves not only the code, but also the way the team develops software.
