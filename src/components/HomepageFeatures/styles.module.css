@@ -1,11 +1,36 @@
 .features {
-  display: flex;
-  align-items: center;
-  padding: 2rem 0;
+  background: var(--ifm-background-color);
+  padding: 3rem 0;
   width: 100%;
 }
 
-.featureSvg {
-  height: 200px;
-  width: 200px;
+.featureCard {
+  background: var(--coderabbit-surface);
+  border: 1px solid rgba(255, 87, 10, 0.16);
+  border-radius: 8px;
+  box-shadow: 0 12px 30px rgba(23, 18, 15, 0.06);
+  height: 100%;
+  padding: 1.5rem;
+}
+
+.featureBadge {
+  align-items: center;
+  background: var(--coderabbit-orange);
+  border-radius: 6px;
+  color: var(--coderabbit-ink);
+  display: inline-flex;
+  font-weight: 700;
+  height: 2.25rem;
+  justify-content: center;
+  margin-bottom: 1rem;
+  min-width: 2.25rem;
+  padding: 0 0.55rem;
+}
+
+.features :global(.col:nth-child(2)) .featureBadge {
+  background: var(--coderabbit-green);
+}
+
+.features :global(.col:nth-child(3)) .featureBadge {
+  background: var(--coderabbit-purple);
 }

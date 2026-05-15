@@ -6,25 +6,52 @@
 
 /* You can override the default Infima variables here. */
 :root {
-  --ifm-color-primary: #2e8555;
-  --ifm-color-primary-dark: #29784c;
-  --ifm-color-primary-darker: #277148;
-  --ifm-color-primary-darkest: #205d3b;
-  --ifm-color-primary-light: #33925d;
-  --ifm-color-primary-lighter: #359962;
-  --ifm-color-primary-lightest: #3cad6e;
+  --ifm-color-primary: #ff570a;
+  --ifm-color-primary-dark: #e64e09;
+  --ifm-color-primary-darker: #d94a09;
+  --ifm-color-primary-darkest: #b33d07;
+  --ifm-color-primary-light: #ff6823;
+  --ifm-color-primary-lighter: #ff7435;
+  --ifm-color-primary-lightest: #ff9363;
+  --ifm-background-color: #fffaf7;
+  --ifm-footer-background-color: #17120f;
+  --coderabbit-orange: #ff570a;
+  --coderabbit-green: #25e2a8;
+  --coderabbit-purple: #838bff;
+  --coderabbit-ink: #17120f;
+  --coderabbit-surface: #fff7f1;
   --ifm-code-font-size: 95%;
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.1);
 }
 
-/* For readability concerns, you should choose a lighter palette in dark mode. */
 [data-theme='dark'] {
-  --ifm-color-primary: #25c2a0;
-  --ifm-color-primary-dark: #21af90;
-  --ifm-color-primary-darker: #1fa588;
-  --ifm-color-primary-darkest: #1a8870;
-  --ifm-color-primary-light: #29d5b0;
-  --ifm-color-primary-lighter: #32d8b4;
-  --ifm-color-primary-lightest: #4fddbf;
+  --ifm-color-primary: #ff8754;
+  --ifm-color-primary-dark: #ff6f31;
+  --ifm-color-primary-darker: #ff641f;
+  --ifm-color-primary-darkest: #e64900;
+  --ifm-color-primary-light: #ff9f77;
+  --ifm-color-primary-lighter: #ffaa88;
+  --ifm-color-primary-lightest: #ffcfbd;
+  --ifm-background-color: #17120f;
+  --ifm-navbar-background-color: #17120f;
+  --ifm-footer-background-color: #0f0c0a;
+  --coderabbit-surface: #221914;
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
+}
+
+.navbar {
+  box-shadow: 0 1px 0 rgba(255, 87, 10, 0.18);
+}
+
+.button.button--secondary {
+  background-color: var(--coderabbit-ink);
+  border-color: var(--coderabbit-ink);
+  color: #fff;
+}
+
+.button.button--secondary:hover,
+.button.button--secondary:focus {
+  background-color: #2a211c;
+  border-color: #2a211c;
+  color: #fff;
 }

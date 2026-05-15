@@ -1,55 +1,57 @@
 import type {ReactNode} from 'react';
 import clsx from 'clsx';
 import Heading from '@theme/Heading';
+import Translate from '@docusaurus/Translate';
 import styles from './styles.module.css';
 
 type FeatureItem = {
   title: string;
-  Svg: React.ComponentType<React.ComponentProps<'svg'>>;
+  titleId: string;
+  badge: string;
   description: ReactNode;
 };
 
 const FeatureList: FeatureItem[] = [
   {
-    title: 'Easy to Use',
-    Svg: require('@site/static/img/undraw_docusaurus_mountain.svg').default,
+    title: 'CodeRabbit',
+    titleId: 'homepage.features.coderabbit.title',
+    badge: 'CR',
     description: (
-      <>
-        Docusaurus was designed from the ground up to be easily installed and
-        used to get your website up and running quickly.
-      </>
+      <Translate id="homepage.features.coderabbit.description">
+        CodeRabbitの基本と、Pull Request上でのレビュー支援の受け方を学びます。
+      </Translate>
     ),
   },
   {
-    title: 'Focus on What Matters',
-    Svg: require('@site/static/img/undraw_docusaurus_tree.svg').default,
+    title: 'Git and GitHub',
+    titleId: 'homepage.features.git.title',
+    badge: 'GH',
     description: (
-      <>
-        Docusaurus lets you focus on your docs, and we&apos;ll do the chores. Go
-        ahead and move your docs into the <code>docs</code> directory.
-      </>
+      <Translate id="homepage.features.git.description">
+        ブランチ、コミット、Pull Requestなど、レビューに必要な周辺技術を整理します。
+      </Translate>
     ),
   },
   {
-    title: 'Powered by React',
-    Svg: require('@site/static/img/undraw_docusaurus_react.svg').default,
+    title: 'Bookmark App',
+    titleId: 'homepage.features.bookmark.title',
+    badge: 'APP',
     description: (
-      <>
-        Extend or customize your website layout by reusing React. Docusaurus can
-        be extended while reusing the same header and footer.
-      </>
+      <Translate id="homepage.features.bookmark.description">
+        個人用ブックマークアプリの開発体験を通して、実践的なPRレビューを学びます。
+      </Translate>
     ),
   },
 ];
 
-function Feature({title, Svg, description}: FeatureItem) {
+function Feature({title, titleId, badge, description}: FeatureItem) {
   return (
     <div className={clsx('col col--4')}>
-      <div className="text--center">
-        <Svg className={styles.featureSvg} role="img" />
-      </div>
-      <div className="text--center padding-horiz--md">
-        <Heading as="h3">{title}</Heading>
+      <div className={styles.featureCard}>
+        <div className={styles.featureBadge}>{badge}</div>
+        <Heading as="h3">
+          <Translate id={titleId}>{title}</Translate>
+        </Heading>
         <p>{description}</p>
       </div>
     </div>
