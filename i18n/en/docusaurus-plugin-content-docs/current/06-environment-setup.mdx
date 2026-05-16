@@ -7,20 +7,280 @@ title: Prepare the Development Environment
 
 ## Goal
 
-Prepare the repository, local environment, and CodeRabbit integration needed for the hands-on exercise.
+Get the tools you need for the hands-on exercise ready, one at a time.
 
-## Fork the Repository
+When you finish this chapter, the demo application ([Bookmark Demo](https://bookmark-demo.goofmint.workers.dev/)) will run on your own computer, and you will be able to receive CodeRabbit reviews on your own GitHub repository.
 
-TODO: Explain how learners fork the repository so they can work in their own GitHub account.
+The commands are written so you can copy and paste them as you go. Even if there is a command whose meaning you do not understand, it is fine to just run it as is for now.
 
-## Run Locally
+## The Overall Flow
 
-TODO: Document dependency installation, environment variables, local server startup, and smoke testing.
+You will prepare things in the following order. If you go from top to bottom, you will be done. Click each item to jump to that step.
 
-## Set Up D1
+| Step | What you do |
+| --- | --- |
+| [Step 1](#step-1) | Install Git |
+| [Step 2](#step-2) | Create a GitHub account |
+| [Step 3](#step-3) | Fork the demo application's repository (make your own copy) |
+| [Step 4](#step-4) | Bring the forked repository to your computer (clone) |
+| [Step 5](#step-5) | Install Node.js and get the required parts |
+| [Step 6](#step-6) | Create a Cloudflare account |
+| [Step 7](#step-7) | Create the database (D1) and image storage (R2) |
+| [Step 8](#step-8) | Start the application locally and verify it works |
+| [Step 9](#step-9) | Enable CodeRabbit on your repository |
 
-TODO: Explain D1 database creation, migrations, and local development usage.
+:::note[Glossary]
+**Repository**: A place that stores source code together with its change history. It is hosted on GitHub.
 
-## Enable CodeRabbit
+**Fork**: Making a full copy of someone else's repository under your own account. Because it is a copy, you can change it freely without affecting the original repository.
 
-TODO: Explain how to enable CodeRabbit for the GitHub repository so Pull Request reviews can run.
+**Clone**: Downloading a repository on GitHub to your own computer.
+:::
+
+## 1. Install Git \{#step-1}
+
+**Git** is a tool for recording the change history of source code. Without it the later steps cannot proceed, so we install it first.
+
+First, check whether it is already installed. Open a terminal (on Windows, "Command Prompt" or "PowerShell"; on Mac, "Terminal") and run the following.
+
+```bash
+git --version
+```
+
+If a version number like `git version 2.x.x` is shown, it is already installed. Proceed to [Step 2](#step-2).
+
+If you get an error like `command not found`, install it for your OS as follows.
+
+### On Windows
+
+Open the [official Git for Windows site](https://gitforwindows.org/) and run the downloaded installer. You can proceed with all the options left at their defaults by clicking "Next".
+
+### On Mac
+
+Running the following command opens the developer tools installation screen. Follow the on-screen instructions to install.
+
+```bash
+xcode-select --install
+```
+
+### On Linux (Ubuntu / Debian)
+
+```bash
+sudo apt update
+sudo apt install -y git
+```
+
+After installing, run `git --version` once more and confirm that a version number is shown.
+
+## 2. Create a GitHub Account \{#step-2}
+
+**GitHub** is a service that lets you put repositories on the internet and share them. CodeRabbit reviews also happen on GitHub, so an account is required.
+
+If you already have an account, skip this step and proceed to [Step 3](#step-3).
+
+1. Open [Sign up for GitHub](https://github.com/signup)
+2. Enter your email address, password, and username
+3. Follow the on-screen instructions to complete registration
+4. Click the link in the confirmation email sent to your registered email address to verify your email
+
+The free plan is fine.
+
+Next, tell the Git on your computer "who you are." Replace the `Your Name` and `you@example.com` parts with your own name and the email address you registered with GitHub, then run the command.
+
+```bash
+git config --global user.name "Your Name"
+git config --global user.email "you@example.com"
+```
+
+## 3. Fork the Repository \{#step-3}
+
+The repository that serves as the base for this hands-on is the following.
+
+- [https://github.com/goofmint/bookmark-demo](https://github.com/goofmint/bookmark-demo)
+
+Because you cannot change this repository directly, you make **a copy under your own account (Fork)** and use that.
+
+1. While logged in, open [https://github.com/goofmint/bookmark-demo](https://github.com/goofmint/bookmark-demo)
+2. Click the **"Fork"** button at the top right of the screen  
+![The bookmark-demo repository page, with a "Fork" button at the top right](/img/github-repository.jpg)
+3. Click the "Create fork" button
+
+After a short wait, your own copy at `https://github.com/your-username/bookmark-demo` is created. From here on, do all the work in this repository of yours.
+
+## 4. Clone to Your Computer \{#step-4}
+
+Download the forked repository to your own computer.
+
+In the following command, replace the `your-username` part with your own GitHub username, then run it.
+
+```bash
+git clone https://github.com/your-username/bookmark-demo.git
+```
+
+When the download finishes, move into the folder that was created.
+
+```bash
+cd bookmark-demo
+```
+
+:::note[Glossary]
+`cd` means "change directory" and is a command for switching the place where you work. From here on, run all commands inside this `bookmark-demo` folder.
+:::
+
+## 5. Install Node.js and Get the Required Parts \{#step-5}
+
+This application uses **Node.js**, a runtime for running JavaScript on your computer.
+
+First, check whether it is installed.
+
+```bash
+node --version
+```
+
+If `v20.0.0` or higher is shown, you are OK. If nothing is shown, or the number is smaller than 20, download and install the **LTS version** from the [official Node.js site](https://nodejs.org/) (the options can be left at their defaults).
+
+Next, install all the parts (libraries) the application needs to run, in one go. Run the following inside the `bookmark-demo` folder.
+
+```bash
+npm install
+```
+
+:::note[Glossary]
+**npm** is a tool for managing parts for Node.js. `npm install` looks at the list of parts this application needs (`package.json`) and automatically downloads the required ones together. It may take a little time.
+:::
+
+## 6. Create a Cloudflare Account \{#step-6}
+
+This application runs on a service called **Cloudflare**. The database and image storage also use Cloudflare's, so an account is required.
+
+If you already have an account, just do the login steps.
+
+1. Open [Cloudflare Dashboard | Manage Your Account](https://dash.cloudflare.com/sign-up)
+2. Enter your email address and password to register
+3. Click the link in the confirmation email you receive to verify your email
+
+The free plan is fine.
+
+Next, log in so you can operate Cloudflare from your computer. When you run the following command, a browser opens and asks for permission, so click "Allow".
+
+```bash
+npx wrangler login
+```
+
+:::note[Glossary]
+**Wrangler** is a tool for operating Cloudflare from the command line. `npx` is a command that "runs an already-installed tool," and it was installed together by `npm install` in [Step 5](#step-5).
+:::
+
+## 7. Create the Database and Image Storage \{#step-7}
+
+This application uses a **database (Cloudflare D1)** to save bookmarks and **storage (Cloudflare R2)** to save OGP images. You create your own.
+
+First, create the database (D1).
+
+```bash
+npx wrangler d1 create bookmark-demo
+```
+
+When you run it, a configuration like the following is shown on the screen.
+
+```toml
+[[d1_databases]]
+binding = "DB"
+database_name = "bookmark-demo"
+database_id = "a long alphanumeric string is shown here"
+```
+
+Copy the value of this `database_id` (the content inside the `"..."`).
+
+Next, open the file `wrangler.toml` in the folder with a text editor. Find the `database_id` line under `[[d1_databases]]`, replace its value with the value you just copied, and save.
+
+```toml
+[[d1_databases]]
+binding = "DB"
+database_name = "bookmark-demo"
+database_id = "replace with your own copied value"
+migrations_dir = "migrations"
+```
+
+:::note[Why replace it]
+`database_id` is like an address that points to "which database to use." At first it points to someone else's database, so you need to replace it with the address of the database you created.
+:::
+
+Once replaced, create the tables you need inside the database. Run the following command.
+
+```bash
+npx wrangler d1 migrations apply bookmark-demo --local
+```
+
+`--local` means "run this against the database used only inside your own computer."
+
+:::note[Glossary]
+**Migration**: The work of applying a blueprint that says "create tables like this" to a database. Without doing this, the application has no place to save data and gets an error.
+:::
+
+Finally, create the storage (R2) for saving OGP images.
+
+```bash
+npx wrangler r2 bucket create bookmark-demo-ogp
+```
+
+The database and image storage are now ready. In the next step, you verify local startup.
+
+## 8. Start Locally and Verify It Works \{#step-8}
+
+First, build the application (assemble it into a runnable form).
+
+```bash
+npm run build
+```
+
+If it finishes without errors, start the local server.
+
+```bash
+npm run dev
+```
+
+On success, a URL like `http://localhost:8787` is shown in the terminal. Open that URL in a browser. If the Bookmark Demo screen appears and you can add a bookmark by entering a URL, it is a success.
+
+![The Bookmark Demo screen started locally, with a URL input field and an "Add Bookmark" button](/img/demo-initial.jpg)
+
+When you want to stop the server, press `Ctrl + C` (hold the Control key and press C) in the terminal.
+
+### Try Running the Tests (optional)
+
+This application comes with tests. You can run them with the following command.
+
+```bash
+npm test
+```
+
+If all the tests pass, it is a sign that the environment is set up correctly.
+
+## 9. Enable CodeRabbit (OSS Version) \{#step-9}
+
+Finally, set things up so you can receive **CodeRabbit** reviews on your repository. Here we configure it with the free method for open source (the OSS version).
+
+1. While logged in to GitHub, open the [CodeRabbit GitHub Marketplace page](https://github.com/marketplace/coderabbitai)
+2. Click the **"Add"** button on the page
+3. From the plan options, choose **"Open Source"**
+4. As the install destination, choose your own account that has the repository you forked in [Step 3](#step-3)
+5. Check the box **"Allow my billing information to be linked with this organization"**
+6. For the target repository selection, choose `bookmark-demo` ("All repositories" is also fine. You can change this later.)
+7. When you complete the installation, you are moved to the CodeRabbit dashboard and your repository is shown
+
+From now on, whenever you create a Pull Request (PR) in this repository of yours, CodeRabbit will automatically review it.
+
+:::note[Note]
+The OSS version setup steps are also introduced in detail, with screen images, in the article "[Introducing CodeRabbit for free for OSS](https://qiita.com/goofmint/items/e4ab57e6bf4d8f98ea5c)" (in Japanese). Refer to it if the screen has changed and it is hard to follow.
+:::
+
+## Recap So Far
+
+You have now prepared the following.
+
+- Git and a GitHub account
+- The `bookmark-demo` repository forked for yourself
+- The demo application running locally
+- CodeRabbit running on your repository
+
+From the next chapter, you will implement the OGP fetching feature in this application, turn that change into a Pull Request, and receive CodeRabbit reviews.
