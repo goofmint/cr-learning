@@ -1,30 +1,78 @@
 ---
 sidebar_position: 6
-title: 今回作るアプリケーション
+title: 今回実装する機能
 ---
 
-# 今回作るアプリケーション
+# 今回実装する機能
 
 ## この章の目的
 
-ハンズオンで扱う題材の概要と、なぜレビュー学習に適しているのかを理解します。
+ハンズオンで扱うデモアプリの概要を理解します。
 
-## Bookmark Inboxとは
+この章では、すでにあるデモアプリに対して、何を実装するのかを先に押さえます。細かな環境構築や起動方法は、次の「開発環境を準備する」章で扱います。
 
-TODO: URLを保存し、後から見返すための個人用ブックマークアプリとして説明する。
+デモアプリは次のURLで確認できます。
+
+- デモアプリ: [https://bookmark-demo.goofmint.workers.dev/](https://bookmark-demo.goofmint.workers.dev/)
+- リポジトリ: [https://github.com/goofmint/bookmark-demo](https://github.com/goofmint/bookmark-demo)
+
+## Bookmark Demoとは
+
+Bookmark Demoは、URLを保存して後から見返すための個人用ブックマークアプリです。
+
+現在のアプリでは、主に次の操作ができます。
+
+- URLを入力してブックマークを追加する
+- 保存済みブックマークのURL、タグ、メモを編集する
+- 不要なブックマークを削除する
+- URL、タイトル、タグ、メモを対象にキーワード検索する
+- ブックマーク一覧をページ単位で表示する
+
+ブックマークを追加すると、サーバー側でリンク先のHTMLを取得し、`<title>`を読み取ってタイトルとして保存します。タイトル取得に失敗した場合でも、URLをタイトルとして保存します。
+
+## ハンズオンで作るもの
+
+この教材では、Bookmark DemoにOGP取得機能を実装します。
+
+OGPとは、SNSなどでURLを共有したときに表示される、ページの概要情報です。OGP画像があるページでは、その画像を取得してブックマークに表示できるようにします。
+
+この章では、どんな機能を追加するのかを先に理解します。実装の手順やローカル環境の準備は、次の章から順番に進めます。
+
+## 利用している技術
+
+Bookmark Demoは、Reactで画面を作り、HonoでAPIを作り、Cloudflare Workers上で動くWebアプリです。フロントエンドとAPIが1つのアプリとして動きます。
+
+| 技術 | このアプリでの役割 |
+| --- | --- |
+| [React](https://react.dev/) | ブラウザ上の画面を作る |
+| [Vite](https://vite.dev/) | Reactアプリを開発、ビルドする |
+| [TypeScript](https://www.typescriptlang.org/) | 型を使ってJavaScriptを安全に書く |
+| [Hono](https://hono.dev/) | Cloudflare Workers上でAPIを作る |
+| [Cloudflare Workers](https://developers.cloudflare.com/workers/) | APIと静的ファイル配信を動かすサーバーレス実行環境 |
+| [Cloudflare D1](https://developers.cloudflare.com/d1/) | ブックマークを保存するSQLiteベースのデータベース |
+| [Cloudflare R2](https://developers.cloudflare.com/r2/) | OGP画像の保存用に用意されているオブジェクトストレージ |
+| [Wrangler](https://developers.cloudflare.com/workers/wrangler/) | Cloudflare Workers、D1、R2を操作するCLI |
+| [Vitest](https://vitest.dev/) | APIやUIのテストを実行する |
 
 ## システム構成
 
-TODO: フロントエンド、API、データベース、外部ページ取得の関係を図や文章で整理する。
+アプリ全体の流れは次のようになります。
 
-## Cloudflare Workersとは
+```mermaid
+flowchart LR
+  U[利用者] --> C[React画面]
+  C -->|fetch| A[Hono API on Cloudflare Workers]
+  A -->|保存・検索| D[(Cloudflare D1)]
+  A -->|HTML取得| W[外部Webページ]
+  A -.将来のOGP画像保存.-> R[(Cloudflare R2)]
+```
 
-TODO: エッジ環境で動作するサーバーレス実行基盤として説明する。
+ブックマーク一覧を表示するとき、React画面は`/api/bookmarks`を呼び出します。APIはD1からブックマークを読み出し、JSONとして返します。
 
-## D1とは
-
-TODO: Cloudflareが提供するSQLiteベースのデータベースとして説明する。
+ブックマークを追加するとき、React画面はURLをAPIへ送ります。APIはURLを正規化し、リンク先ページの`<title>`を取得し、D1へ保存します。
 
 ## なぜこの題材を使うのか
 
-TODO: URL保存、HTML取得、OGP解析、DB保存が含まれ、レビュー観点を作りやすいことを説明する。
+このアプリは、画面、API、データベース、テストがひとまとまりになっています。小さいのに、実際のWebアプリで起きる変更の流れを追いやすいので、学習用の題材として扱いやすいです。
+
+この教材では、まず実装対象の機能の全体像を理解し、次の「開発環境を準備する」章で実際にローカル環境を整えます。
