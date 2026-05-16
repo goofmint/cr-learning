@@ -55,3 +55,39 @@
   border-color: #2a211c;
   color: #fff;
 }
+
+/* AI 向けプロンプト（```prompt）を、通常のコードブロックと見分けやすくする。 */
+div[class*='codeBlockContainer']:has(pre.language-prompt) {
+  border: 1px solid var(--coderabbit-purple);
+  border-radius: var(--ifm-code-border-radius, 8px);
+  box-shadow: 0 0 0 3px rgba(131, 139, 255, 0.12);
+}
+
+div[class*='codeBlockContainer']:has(pre.language-prompt)::before {
+  /* 言語に依存しないラベルにして、英語版でもそのまま使えるようにする。 */
+  content: '🤖 AI PROMPT';
+  display: block;
+  padding: 4px 12px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: #fff;
+  background: var(--coderabbit-purple);
+}
+
+pre.language-prompt {
+  background: rgba(131, 139, 255, 0.08);
+  border-left: 4px solid var(--coderabbit-purple);
+}
+
+pre.language-prompt code {
+  color: var(--coderabbit-ink);
+}
+
+[data-theme='dark'] pre.language-prompt {
+  background: rgba(131, 139, 255, 0.16);
+}
+
+[data-theme='dark'] pre.language-prompt code {
+  color: #f3f1ef;
+}

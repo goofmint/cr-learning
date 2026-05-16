@@ -7,24 +7,294 @@ title: Implement OGP Fetching
 
 ## Goal
 
-Add OGP fetching to Bookmark Inbox and create an implementation diff suitable for review.
+Add a feature to Bookmark Demo that displays the OGP image as a thumbnail.
 
-## What is OGP?
+The goal of this chapter is **not** to write every line of code yourself. It is **to give the right instructions to an AI coding tool and produce a change that is easy to review**. When the implementation is done, the bookmark list will show images of the linked pages, and in the next chapter you will turn that change into a PR and receive a CodeRabbit review.
 
-TODO: Explain Open Graph Protocol and why a bookmark application uses it.
+:::note[How to work through this chapter]
+In this hands-on exercise you implement the feature using an AI coding tool (Claude Code, Cursor, GitHub Copilot, or any other — it does not matter which). This chapter provides **sample prompts** you can paste in as-is.
 
-## Scope of This Implementation
+In case the AI cannot implement it well, the end of the chapter also provides [a way to download the finished version and swap it in](#fallback). If you get stuck, feel free to use that.
+:::
 
-TODO: Define which metadata will be fetched, such as title, description, and image URL.
+## What is OGP? \{#what-is-ogp}
 
-## Fetch HTML from a URL
+**OGP** (Open Graph Protocol) is a mechanism a web page uses to declare "when this page is shared on social media and the like, use this title, description, and image."
 
-TODO: Explain fetching HTML from the input URL and handling failures.
+For example, when you paste a news article URL into X or Slack, a card with the article's image is shown. That is built by reading OGP information.
 
-## Parse OGP Tags
+OGP is written inside the HTML `<head>` as `<meta>` tags like the following.
 
-TODO: Explain extracting required values from meta tags in the HTML.
+```html
+<meta property="og:title" content="The article title" />
+<meta property="og:description" content="The article summary" />
+<meta property="og:image" content="https://example.com/cover.png" />
+```
 
-## Integrate with Bookmark Saving
+This time, of these, we fetch **`og:image` (the representative image of the page)** and display it as a thumbnail in the bookmark list.
 
-TODO: Document how to connect fetched OGP data to bookmark persistence.
+:::note[Why store the image instead of using it directly]
+If you point an `<img src>` directly at another site's image URL, the moment that site deletes or replaces the image, your display breaks too. To avoid this, this time we **copy the image to our own storage (Cloudflare R2) once and then display it**. R2 was already created in step 7 of [Prepare the Development Environment](environment-setup).
+:::
+
+## Scope of This Implementation \{#scope}
+
+This time we add the following five things.
+
+| # | What to do | Mainly changed files |
+| --- | --- | --- |
+| 1 | Add a column to bookmarks that stores the OGP image path | `migrations/0003_add_ogp_image.sql` (new) |
+| 2 | Create the process that fetches an OGP image from a URL and stores it in R2 | `src/worker/ogp.ts` (new) |
+| 3 | Call 2 when adding/updating a bookmark, and add an API to serve the image | `src/worker/index.ts`, `src/shared/bookmarks.ts` |
+| 4 | Show the thumbnail on the list screen | `src/client/App.tsx`, `src/client/styles.css` |
+| 5 | Add tests for 1–4 | `test/ogp.test.ts` (new) and others |
+
+The feature policy is as follows. This becomes the "spec" you hand to the AI, so make sure you understand it well.
+
+- OGP image fetching is **best-effort**. Even for a page with no image or where fetching fails, saving the bookmark itself must always succeed.
+- When there is no image, set the OGP image path to an **empty string** and do not show a thumbnail in the list.
+- Only store **real image files (PNG/JPEG/WebP/GIF/AVIF)**. Do not store files that are too large.
+- Do not expose R2 publicly. Serve images **through the Worker**.
+
+## The Overall Implementation \{#flow}
+
+The flow when a bookmark is added looks like this.
+
+```mermaid
+flowchart TD
+  A[User adds a URL] --> B[Fetch the linked HTML]
+  B --> C{Is there an og:image?}
+  C -- No / failed --> E[Save with the image path empty]
+  C -- Yes --> D[Fetch the image and store it in R2]
+  D --> F[Save the image path to the DB]
+  E --> G[List view: no image]
+  F --> H[List view: with thumbnail]
+```
+
+## Preparing for AI Coding \{#prepare-ai}
+
+Confirm that all the steps in [Prepare the Development Environment](environment-setup) are finished. The prerequisite is that the app can start locally.
+
+Next, create a working Branch. Keep `main` as-is and make changes on a dedicated Branch.
+
+```bash
+git checkout main
+git pull
+git checkout -b feature/ogp-image
+```
+
+Open your AI coding tool in this `bookmark-demo` folder.
+
+:::note[Tip for telling the AI the context]
+Adding a sentence about "what kind of app this is" at the start of the prompt improves the AI's accuracy. It is good to prepend the following sentence to each prompt.
+
+> This is a bookmark app running on Hono + React + Cloudflare Workers/D1/R2. The database is D1, and image storage uses the R2 binding name `OGP_BUCKET`. Match the existing code's style and comment granularity.
+:::
+
+## Sample Prompts \{#prompts}
+
+From here are the sample prompts per step. Run them **one at a time, in order**, and check the changes with `git diff` each time. Splitting it into steps rather than asking for everything at once makes the AI's implementation more stable and easier to review.
+
+### Step 1: Add a column to the database
+
+```prompt
+Create a new migration named 0003_add_ogp_image.sql in the migrations folder.
+Add a TEXT column called ogp_image_url to the bookmarks table.
+Make it NOT NULL with a default value of the empty string ''.
+Existing rows and the seed data have no og:image, so explain in a comment
+that the empty string is fine for them.
+```
+
+Once created, apply it to the local database.
+
+```bash
+npx wrangler d1 migrations apply bookmark-demo --local
+```
+
+### Step 2: The process that fetches and stores the OGP image
+
+```prompt
+Create src/worker/ogp.ts as a new file. Export the following functions.
+
+1. extractOgImageUrl(html, baseUrl): extract the first og:image URL from an
+   HTML string.
+   - Scan <meta> tags and find one whose property or name is "og:image"
+     ("og:image:url" is also acceptable)
+   - Take the value of the content attribute
+   - Resolve relative URLs against baseUrl into absolute URLs
+   - Return null for anything other than http/https
+   - Return null if none is found
+
+2. storeOgpImage(pageUrl, bucket, fetcher = fetch): the return value is a string.
+   - Fetch the HTML of pageUrl (5-second timeout, send a User-Agent)
+   - Return "" if the content-type is not text/html
+   - Get the image URL with extractOgImageUrl; return "" if none
+   - Fetch the image; return "" if the content-type is not one of
+     image/png, image/jpeg, image/webp, image/gif, image/avif
+   - Return "" if the size is 0 or over 5MB
+   - Use crypto.randomUUID() to put it in R2 with the key ogp/<uuid>.<ext>
+   - Return the stored path "/ogp/<uuid>.<ext>"
+   - If anything fails, always return "" (so it does not block saving the bookmark)
+
+Do not use classes; write in the same function style as the existing code.
+Explain in comments why it returns "" and why image types are restricted.
+```
+
+:::note[Why take `fetcher = fetch` as an argument]
+So that in tests you can inject fake responses without making real network requests. If you tell the AI "design it to be testable," it adds this kind of consideration.
+:::
+
+### Step 3: Integrate with the API and serve the image
+
+```prompt
+Add ogpImageUrl: string to the Bookmark type in src/shared/bookmarks.ts.
+
+Change src/worker/index.ts as follows.
+- Add ogp_image_url / ogpImageUrl to the BookmarkRow type and toBookmark
+  (fall back to "" for existing rows)
+- Add the ogp_image_url column to the list/create/update SQL
+- In POST /api/bookmarks and PUT /api/bookmarks/:id, before saving call
+  storeOgpImage(url, c.env.OGP_BUCKET) and save its return value as ogp_image_url
+- Add a GET /ogp/:name route. Get ogp/<name> from R2; return 404 JSON if
+  missing, otherwise return it carrying over the content-type.
+  Add cache-control: public, max-age=86400, immutable
+
+Always keep the design where bookmark saving succeeds even if OGP fetching fails.
+Match the way the existing comments are written.
+```
+
+### Step 4: Show the thumbnail in the list
+
+```prompt
+In src/client/App.tsx, in the part that displays a single bookmark (the normal
+display, not the edit form), show an <img> only when bookmark.ogpImageUrl exists.
+- className="bookmark-thumb", alt="", aria-hidden="true", loading="lazy"
+- Show nothing when there is no image
+
+Add a .bookmark-thumb style to src/client/styles.css.
+- Fixed width 120px and height 90px, object-fit: cover, rounded corners,
+  a thin border
+- Use :has(.bookmark-thumb) so an image column appears only when a thumbnail exists
+- Adjust to a slightly smaller size at phone widths
+Do not break the existing layout (grid).
+```
+
+### Step 5: Add tests
+
+```prompt
+Add the following tests with Vitest.
+
+test/ogp.test.ts (new)
+- extractOgImageUrl: absolute URL extraction / relative URL resolution /
+  null when no og:image / excluding non-http(s)
+- storeOgpImage: stores the image and returns the path / "" when no og:image /
+  "" for a disallowed content-type / "" when the page fetch fails
+  (pass a fake fetch to the fetcher argument so it does not make network requests)
+
+In test/worker.test.ts, add that ogp_image_url is saved on creation, that
+GET /ogp/:name returns the image, and that it returns 404 when missing.
+
+In test/App.test.tsx, add that the thumbnail is shown when ogpImageUrl exists
+and not shown when it does not.
+
+Match the way the existing tests and mocks are written.
+```
+
+Once the implementation is roughly done, run the build and the tests.
+
+```bash
+npm run build
+npm test
+```
+
+`npm run build` also doubles as a type check. If an error appears, paste the message as-is to the AI and tell it "fix this error," and it will fix it.
+
+## Tips for AI Coding \{#tips}
+
+- **Do not ask for everything at once.** Split into steps and check with `git diff` each time. The smaller the diff, the sooner you notice mistakes.
+- **Do not leave the spec vague.** Instead of "do it nicely," hand over decision criteria in words, such as "return an empty string on failure."
+- **Hand over errors in full.** Pasting the terminal error text as-is is the fastest way to get it fixed.
+- **Do not let it break what works.** Make explicit what you want protected, such as "do not change the behavior of the existing list API."
+- **Do not blindly trust the AI's implementation.** You will receive a CodeRabbit review afterward. Read the `git diff` yourself so you can explain it.
+
+## When It Does Not Work: Swap In the Finished Version \{#fallback}
+
+When the AI's implementation just will not pass, you can fetch and swap in the finished code. **You can also use it as an answer key.**
+
+The finished version is on a Branch called `feat/ogp-image` in the demo repository.
+
+- Reference: [https://github.com/goofmint/bookmark-demo/tree/feat/ogp-image](https://github.com/goofmint/bookmark-demo/tree/feat/ogp-image)
+
+### 1. Download as a Zip
+
+Opening the following URL in your browser downloads the contents of the `feat/ogp-image` Branch as a Zip.
+
+```text
+https://github.com/goofmint/bookmark-demo/archive/refs/heads/feat/ogp-image.zip
+```
+
+When you unzip the downloaded file, a folder named `bookmark-demo-feat-ogp-image` is created. This is the **complete finished code**. Keep it in a different location from your own `bookmark-demo` folder.
+
+:::note[Downloading from the GitHub screen]
+If the URL above is confusing, open the [repository page](https://github.com/goofmint/bookmark-demo), select `feat/ogp-image` with the Branch switcher at the top left, and use the green **"Code"** button → "Download ZIP" to get the same thing.
+:::
+
+### 2. Swap the Folders
+
+This time's changes all fit inside the following three folders. Use these three folders from the unzipped folder to **replace wholesale** the same folders in your own `bookmark-demo` folder.
+
+| Folder to replace | Contents |
+| --- | --- |
+| `src` | Screen and API code |
+| `migrations` | Database blueprints (`0003` is added) |
+| `test` | Test code |
+
+Concretely, delete `src`, `migrations`, and `test` in your own `bookmark-demo` folder once, and copy in `src`, `migrations`, and `test` from the unzipped folder as-is.
+
+:::warning[Replace only these three folders]
+Do not copy the unzipped folder **wholesale**. Values you configured for yourself, such as `database_id` in `wrangler.toml`, would be overwritten too (the value set in step 7 of [Prepare the Development Environment](environment-setup)). These config files are at the root (directly under `bookmark-demo`) and are not included in the three folders above, so replacing only the three folders keeps your settings.
+:::
+
+### 3. Apply and Verify
+
+Once swapped, apply the new migration to the database.
+
+```bash
+npx wrangler d1 migrations apply bookmark-demo --local
+```
+
+Then run the build and the tests.
+
+```bash
+npm run build
+npm test
+```
+
+If both finish without errors, the swap succeeded.
+
+## Verify \{#verify}
+
+Start the local server.
+
+```bash
+npm run dev
+```
+
+Open the displayed URL (such as `http://localhost:8787`) in your browser and check the following.
+
+- When you add a URL of a page that has an OGP image (a news or blog article, etc.), a thumbnail appears in the list
+- Even when you add a page with no OGP image, it does not error and the bookmark is saved (no thumbnail appears)
+- Editing, deleting, and searching existing bookmarks works as before
+
+Once verified, stop the server with `Ctrl + C`.
+
+## Summary So Far
+
+In this chapter you used AI coding to implement OGP fetching in Bookmark Demo.
+
+- Understood the role of OGP (especially `og:image`)
+- Implemented it with sample prompts split into steps
+- Made it possible to fetch the finished version as a Zip and swap it in when stuck
+- Verified the behavior with the build, tests, and the screen
+
+In the next chapter, you commit this change, share it as a Pull Request (PR), and receive a CodeRabbit review.
