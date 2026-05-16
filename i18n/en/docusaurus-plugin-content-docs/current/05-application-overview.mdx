@@ -1,30 +1,78 @@
 ---
 sidebar_position: 6
-title: The Application You Will Build
+title: The Feature You Will Build
 ---
 
-# The Application You Will Build
+# The Feature You Will Build
 
 ## Goal
 
-Understand the hands-on application and why it is suitable for learning review.
+Understand the overview of the demo application used in this hands-on.
 
-## What is Bookmark Inbox?
+In this chapter, you first nail down what you are going to build on top of an existing demo application. Detailed environment setup and how to start the app are covered in the next chapter, "Preparing the Development Environment."
 
-TODO: Describe it as a personal bookmark application for saving URLs and revisiting them later.
+You can check the demo application at the following URLs.
+
+- Demo application: [https://bookmark-demo.goofmint.workers.dev/](https://bookmark-demo.goofmint.workers.dev/)
+- Repository: [https://github.com/goofmint/bookmark-demo](https://github.com/goofmint/bookmark-demo)
+
+## What is Bookmark Demo?
+
+Bookmark Demo is a personal bookmark application for saving URLs and revisiting them later.
+
+In its current state, the application mainly supports the following operations.
+
+- Add a bookmark by entering a URL
+- Edit the URL, tags, and notes of a saved bookmark
+- Delete unneeded bookmarks
+- Search by keyword across URL, title, tags, and notes
+- Display the bookmark list page by page
+
+When you add a bookmark, the server fetches the HTML of the linked page, reads its `<title>`, and saves it as the title. Even if fetching the title fails, the URL is saved as the title.
+
+## What You Will Build in This Hands-On
+
+In this material, you will implement an OGP fetching feature for Bookmark Demo.
+
+OGP is the page summary information that is displayed when you share a URL on social media and similar services. For pages that have an OGP image, you will make it possible to fetch that image and show it on the bookmark.
+
+In this chapter, you first understand what feature will be added. The implementation steps and local environment setup are covered step by step starting from the next chapter.
+
+## Technologies Used
+
+Bookmark Demo is a web application that builds its screens with React, builds its API with Hono, and runs on Cloudflare Workers. The frontend and the API run as a single application.
+
+| Technology | Its role in this application |
+| --- | --- |
+| [React](https://react.dev/) | Builds the screens in the browser |
+| [Vite](https://vite.dev/) | Develops and builds the React application |
+| [TypeScript](https://www.typescriptlang.org/) | Writes JavaScript safely using types |
+| [Hono](https://hono.dev/) | Builds the API on Cloudflare Workers |
+| [Cloudflare Workers](https://developers.cloudflare.com/workers/) | A serverless runtime that runs the API and serves static files |
+| [Cloudflare D1](https://developers.cloudflare.com/d1/) | A SQLite-based database that stores bookmarks |
+| [Cloudflare R2](https://developers.cloudflare.com/r2/) | Object storage prepared for saving OGP images |
+| [Wrangler](https://developers.cloudflare.com/workers/wrangler/) | A CLI for operating Cloudflare Workers, D1, and R2 |
+| [Vitest](https://vitest.dev/) | Runs API and UI tests |
 
 ## System Architecture
 
-TODO: Explain the relationship between the frontend, API, database, and external page fetching.
+The overall flow of the application is as follows.
 
-## What are Cloudflare Workers?
+```mermaid
+flowchart LR
+  U[User] --> C[React screen]
+  C -->|fetch| A[Hono API on Cloudflare Workers]
+  A -->|Save / Search| D[(Cloudflare D1)]
+  A -->|Fetch HTML| W[External web page]
+  A -.Future OGP image storage.-> R[(Cloudflare R2)]
+```
 
-TODO: Describe Cloudflare Workers as a serverless runtime that runs at the edge.
+When displaying the bookmark list, the React screen calls `/api/bookmarks`. The API reads the bookmarks from D1 and returns them as JSON.
 
-## What is D1?
+When adding a bookmark, the React screen sends the URL to the API. The API normalizes the URL, fetches the `<title>` of the linked page, and saves it to D1.
 
-TODO: Describe D1 as Cloudflare's SQLite-based database.
+## Why Use This Subject
 
-## Why Use This Application?
+This application bundles the screen, API, database, and tests together. Even though it is small, it is easy to follow the flow of changes that happen in a real web application, which makes it easy to use as a learning subject.
 
-TODO: Explain that URL saving, HTML fetching, OGP parsing, and database persistence create useful review points.
+In this material, you first understand the overall picture of the feature to implement, and then set up the actual local environment in the next chapter, "Preparing the Development Environment."
