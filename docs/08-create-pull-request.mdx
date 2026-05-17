@@ -7,238 +7,155 @@ title: PRを作成する
 
 ## この章の目的
 
-実装した変更をプルリクエスト（Pull Request。以下PR）として共有し、レビューを受けられる状態にします。
+[OGP取得機能を実装する](ogp-implementation)で作った変更を、Commitし、GitHubへPushして、PR（Pull Request）にします。
 
-## Feature Branchを作る
+この章のゴールは**PRが作成できた状態**です。PRさえできれば、次の章でCodeRabbitのレビューを受けられます。
 
-PRを作る前に、まず作業用のBranchを作ります。`main`は本流として扱い、作業途中の変更を直接入れないようにします。
+Branch・Commit・Push・PRが何をする操作かは[GitHub FlowとPR](github-flow-pr)で説明済みなので、ここでは繰り返しません。今回のOGP機能を、その流れに実際に乗せていきます。
 
-最初に、現在のBranchを確認します。
+## いまの状態を確認する
+
+前の章で、すでに作業用Branch（`feature/ogp-image`）を作り、その上で実装と動作確認まで終わっています。まずは、自分が今そのBranchにいることを確認します。
 
 ```bash
 git branch --show-current
 ```
 
-`main`にいる場合は、最新の状態を取得してから作業Branchを作ります。
+`feature/ogp-image`と表示されればOKです。`main`と表示された場合は、前の章のBranch作成を飛ばしている可能性があります。[OGP取得機能を実装する](ogp-implementation)のBranch作成からやり直してください。
 
-```bash
-git pull
-git checkout -b feature/ogp-card
-```
-
-`feature/ogp-card`はBranch名の例です。Branch名は、作業内容が分かる名前にします。
-
-| 目的 | Branch名の例 |
-| --- | --- |
-| 新機能を追加する | `feature/bookmark-search` |
-| 不具合を修正する | `fix/empty-title-error` |
-| ドキュメントを更新する | `docs/github-flow-guide` |
-| リファクタリングする | `refactor/bookmark-service` |
-
-Branch名はチームによってルールが違うことがあります。プロジェクトに既存の命名ルールがある場合は、それに合わせます。
-
-## Commitを作る
-
-実装が終わったら、Commitを作ります。Commitは、変更履歴の1単位です。
-
-まず、変更されたファイルを確認します。
+次に、何が変わったかを確認します。
 
 ```bash
 git status
-```
-
-次に、差分を確認します。
-
-```bash
 git diff
 ```
 
-`git diff`を見ると、どの行を追加、変更、削除したのかが分かります。Commitする前に、自分が意図していない変更が混ざっていないか確認しましょう。
+`git status`で変更・追加されたファイルの一覧、`git diff`で実際の差分が見られます。前の章で触ったファイル（`migrations/0003_add_ogp_image.sql`、`src/worker/ogp.ts`、`src/worker/index.ts`、`src/client/App.tsx`、テストなど）だけが出ているか、意図しないファイルが混ざっていないかをここで見ておきます。
 
-問題なければ、Commitに含めるファイルを選びます。
+## Commitする
 
-```bash
-git add src/components/BookmarkCard.tsx
-git add src/components/BookmarkCard.module.css
-```
+今回はOGP機能の追加という1つのまとまった変更なので、関係するファイルをまとめて1つのCommitにします。
 
-すべての変更をまとめて追加する場合は、次のコマンドも使えます。
+新しく作ったファイル（`0003_add_ogp_image.sql`や`ogp.ts`など）があるので、`git add`で明示的に追加します。
 
 ```bash
-git add .
+git add migrations/ src/ test/
 ```
 
-ただし、`git add .`は現在のディレクトリ以下の変更をまとめて追加します。不要なファイルが混ざっていないか、事前に`git status`で確認してください。
-
-Commitを作ります。
+追加されたかを`git status`でもう一度確認し、問題なければCommitします。
 
 ```bash
-git commit -m "ブックマークカードにOGP画像を表示"
+git commit -m "ブックマーク一覧にOGP画像を表示する"
 ```
 
-すでにGitで管理されているファイルだけをまとめてCommitする場合は、次のコマンドも使えます。
+Commitメッセージは「何をしたか」が後から読んで分かるように書きます。`修正`や`いろいろ変更`のような、見ても内容が分からないメッセージは避けます。今回のメッセージはそのままPRのタイトルにも流用できます。
+
+## GitHubへPushする
+
+CommitをGitHubへ送ります。このBranchを初めてPushするので、`-u origin Branch名`を付けます。
 
 ```bash
-git commit -am "ブックマークカードにOGP画像を表示"
+git push -u origin feature/ogp-image
 ```
 
-`git commit -a`は、新しく作成したファイルをCommitに含めません。新規ファイルがある場合は、先に`git add ファイル名`を実行してください。
-
-Commitメッセージは「何をしたか」が分かるように書きます。
-
-良い例です。
-
-```text
-ブックマークカードにOGP画像を表示
-URL未入力時のバリデーションを追加
-READMEにセットアップ手順を追記
-```
-
-分かりにくい例です。
-
-```text
-修正
-対応
-いろいろ変更
-```
-
-Commitは、あとから履歴を読む人のために残ります。未来の自分やチームメンバーが見て、変更内容を理解できる単位にしましょう。
+初回に`-u`を付けておくと、次回以降はこのBranchでは`git push`だけで送れるようになります。
 
 ## PRを作成する
 
-Commitを作ったら、BranchをGitHubへPushします。Pushは、手元のCommitをGitHub上のリポジトリへ送る操作です。
+PushしたあとにGitHubのリポジトリ画面を開くと、`feature/ogp-image`からPRを作る案内が表示されることが多いので、それをクリックします。
 
-```bash
-git push -u origin feature/ogp-card
-```
-
-初回Pushでは`-u origin ブランチ名`を付けます。これにより、次回以降は次のように短くPushできます。
-
-```bash
-git push
-```
-
-Push後、GitHubのリポジトリ画面を開くと、PR作成ボタンが表示されることがあります。
-
-PRはローカルのGitコマンドだけで作るものではありません。ローカルでBranchを作り、Commitし、Pushしたあと、GitHub上でレビュー用のPRページを作ります。
-
-PR作成ボタンが表示されない場合は、GitHub上で次の手順を行います。
+案内が出ない場合は、GitHubの画面で次の手順を行います。
 
 1. リポジトリの画面を開く
 2. `Pull requests`タブを開く
 3. `New pull request`を押す
 4. base Branchに`main`を選ぶ
-5. compare Branchに作業Branchを選ぶ
+5. compare Branchに`feature/ogp-image`を選ぶ
 6. 差分を確認する
-7. タイトルと本文を書く
-8. `Create pull request`を押す
 
-base Branchは「取り込み先」です。多くの場合は`main`です。compare Branchは「今回の変更が入っているBranch」です。
+baseは「取り込み先」、compareは「今回の変更が入っているBranch」です。今回は次の向きになります。
 
 ```mermaid
 flowchart LR
-  A[compare: feature/ogp-card] -->|PR| B[base: main]
+  A[compare: feature/ogp-image] -->|PR| B[base: main]
 ```
 
-PRを作る前に、GitHub上の差分を一度読み直しましょう。ローカルでは気づかなかった不要な変更や、説明不足の変更に気づけることがあります。
+baseとcompareを逆に選ぶと差分が空になったり、意図しない比較になります。`main` ← `feature/ogp-image`の向きになっているか、ここで一度確認してください。
 
-## 実装意図を書く
+差分が確認できたら、タイトルと本文を書きます。
 
-PR本文には、実装意図を書きます。レビュアーは、コード差分だけでは「なぜこの変更が必要なのか」までは分からないことがあります。
+### 実装意図を書く
 
-最低限、次の4つを書くとレビューしやすくなります。
+タイトルは、変更内容がひと目で分かる一文にします。先ほど付けたCommitメッセージ（`ブックマーク一覧にOGP画像を表示する`）をそのまま使えば十分です。
+
+本文の書き方は[GitHub FlowとPR](github-flow-pr)で説明したとおりです。今回のOGP機能なら、たとえば次のように書きます。
 
 ```markdown
 ## 目的
 
-ブックマーク一覧でリンク先の内容を把握しやすくするため、OGP画像を表示します。
+ブックマーク一覧でリンク先の内容を把握しやすくするため、OGP画像をサムネイルとして表示する。
 
 ## 変更内容
 
-- ブックマークカードにOGP画像の表示領域を追加
-- OGP画像がない場合はプレースホルダーを表示
-- 表示崩れを防ぐため、画像サイズを固定
+- `ogp_image_url`列を追加するマイグレーションを作成
+- URLからOGP画像を取得しR2に保存する処理を追加
+- ブックマーク作成・更新時にOGP画像を取得して保存
+- 一覧画面にサムネイルを表示
+- 上記のテストを追加
 
 ## 確認方法
 
-- `npm run typecheck`
 - `npm run build`
-- ブックマーク一覧画面でOGP画像あり、なしの表示を確認
+- `npm test`
+- 画面でOGP画像あり・なしの両方のURLを追加し、表示と保存を確認
 
 ## レビューしてほしい観点
 
-- OGP画像がない場合の表示が分かりにくくないか
-- 画像サイズの指定が既存デザインに合っているか
+- OGP取得が失敗してもブックマーク保存は成功する作りになっているか
+- 保存する画像種別やサイズの制限が適切か
 ```
 
-「目的」には、変更が必要になった理由を書きます。「変更内容」には、実際に変えたことを書きます。「確認方法」には、実行したコマンドや画面操作を書きます。「レビューしてほしい観点」には、不安な点や特に見てほしい点を書きます。
+「確認方法」と「レビューしてほしい観点」を書いておくと、レビュアー（次の章ではCodeRabbit）が何を中心に見ればよいか分かり、レビューが早く・的確になります。
 
-レビューしてほしい観点を書くと、レビュアーは重要なところから確認できます。たとえば、UIの見え方に迷っているなら、そのことを明示します。仕様の解釈に不安があるなら、それも書きます。
+### PRを確定する
 
-## PRを更新する
+タイトルと本文を書けたら、`Create pull request`を押します。PRページが作られ、変更の差分・Commit・本文が1か所にまとまった状態になります。
 
-レビューコメントを受けたら、同じBranchで修正します。
-
-```bash
-git status
-git diff
-git add .
-git commit -m "レビュー指摘を反映"
-git push
-```
-
-同じBranchへPushすると、既存のPRにCommitが追加されます。PRを作り直す必要はありません。
-
-レビュアーから質問された場合は、すぐにコードを直す前に、意図を説明してもかまいません。レビューは一方的な指示ではなく、よりよい変更にするための会話です。
-
-## Merge前に確認すること
-
-PRをMergeする前に、次の点を確認します。
-
-- PRの目的が本文に書かれている
-- 不要なファイル変更が含まれていない
-- CIが成功している
-- 必要なレビューが終わっている
-- 指摘に対応済み、または対応しない理由を説明済み
-- ローカルまたは画面上で動作確認している
-
-問題がなければ、GitHub上でMergeします。Merge後は、作業Branchを削除できます。
-
-ローカル環境も最新化します。
-
-```bash
-git checkout main
-git pull
-git branch -d feature/ogp-card
-```
-
-作業Branchを削除しても、PRやCommitの履歴はGitHub上に残ります。
+ここまでで、この章のゴールは達成です。
 
 ## よくあるつまずき
 
-`main`で作業を始めてしまった場合は、まだCommitしていなければBranchを作るだけで移動できます。
+**`git push`でエラーが出る**
+
+初回Pushで`-u origin feature/ogp-image`を付けず、`git push`だけを実行すると、送り先が決まっておらずエラーになります。初回は`-u`付きで実行してください。
 
 ```bash
-git checkout -b feature/forgot-branch
+git push -u origin feature/ogp-image
 ```
 
-Commit済みの場合でも、現在のCommitを含んだBranchを作れます。
+**新しく作ったファイルがCommitに入っていない**
 
-```bash
-git checkout -b feature/forgot-branch
-```
+`git commit -am`は、すでにGitで管理されているファイルしか含めません。今回は`0003_add_ogp_image.sql`や`ogp.ts`など新規ファイルがあるため、これだと取りこぼします。新規ファイルは先に`git add`してからCommitします。Commit後に`git status`で、入れたかったファイルがすべて含まれているか確認すると安心です。
 
-Push時にエラーが出る場合は、Branch名やリモート名を確認します。
+**差分に関係ないファイルが混ざっている**
 
-```bash
-git remote -v
-git branch --show-current
-```
-
-差分に不要なファイルが含まれている場合は、Commit前であれば次のようにステージングから外せます。
+`git status`や`git diff`に、今回の変更と関係ないファイル（ローカル用の生成物など）が出ていることがあります。Commitに含めたくないものは、`git add`する前に外しておきます。すでにステージングした場合は次のコマンドで外せます。
 
 ```bash
 git restore --staged ファイル名
 ```
 
-作業内容そのものを戻したい場合は、影響が大きくなることがあります。特にチーム開発では、履歴を大きく書き換える操作を行う前に、チームのルールを確認してください。
+**PRの差分が空、または見覚えのない差分になっている**
+
+base（取り込み先）とcompare（変更元）を逆に選んでいることがほとんどです。base=`main`、compare=`feature/ogp-image`になっているか確認してください。
+
+## ここまでのまとめ
+
+この章では、OGP機能の変更をPRにしました。
+
+- 前の章で作った`feature/ogp-image`の状態を確認した
+- 新規ファイルを含めてCommitした
+- GitHubへPushし、`main`向きのPRを作成した
+- 実装意図が伝わるPR本文を書いた
+
+これでレビューを受ける準備が整いました。次の章では、このPRに対してCodeRabbitのレビューを受け、その指摘を読み解いていきます。
