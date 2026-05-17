@@ -5,240 +5,163 @@ title: Create a PR
 
 # Create a PR
 
-## Goal
+## Goal of This Chapter
 
-Share the implemented changes as a pull request (Pull Request, hereafter PR) so they can be reviewed.
+Take the changes you made in [Implement OGP Fetching](ogp-implementation), Commit them, Push them to GitHub, and turn them into a PR (Pull Request).
 
-## Create a Feature Branch
+The goal of this chapter is **having a PR created**. Once the PR exists, you can receive a CodeRabbit review in the next chapter.
 
-Before creating a PR, create a working Branch. Treat `main` as the main line and avoid putting unfinished changes directly into it.
+What Branch, Commit, Push, and PR each do was already explained in [GitHub Flow and PRs](github-flow-pr), so it is not repeated here. Here you put this OGP feature onto that flow for real.
 
-First, check the current Branch.
+## Check the Current State
+
+In the previous chapter, you already created the working Branch (`feature/ogp-image`) and finished the implementation and verification on it. First, confirm that you are currently on that Branch.
 
 ```bash
 git branch --show-current
 ```
 
-If you are on `main`, get the latest changes and create a working Branch.
+If it shows `feature/ogp-image`, you are good. If it shows `main`, you may have skipped the Branch creation in the previous chapter. Redo it from the Branch creation step in [Implement OGP Fetching](ogp-implementation).
 
-```bash
-git pull
-git checkout -b feature/ogp-card
-```
-
-`feature/ogp-card` is an example Branch name. Use a name that makes the work understandable.
-
-| Purpose | Example Branch Name |
-| --- | --- |
-| Add a feature | `feature/bookmark-search` |
-| Fix a bug | `fix/empty-title-error` |
-| Update documentation | `docs/github-flow-guide` |
-| Refactor code | `refactor/bookmark-service` |
-
-Branch naming rules may differ by team. If your project already has a naming rule, follow it.
-
-## Create a Commit
-
-After implementation, create a Commit. A Commit is one unit of change history.
-
-First, check which files changed.
+Next, check what changed.
 
 ```bash
 git status
-```
-
-Then check the diff.
-
-```bash
 git diff
 ```
 
-`git diff` shows which lines were added, changed, or deleted. Before committing, check that no unintended changes are included.
+`git status` shows the list of changed and added files, and `git diff` shows the actual diff. Check here that only the files you touched in the previous chapter (`migrations/0003_add_ogp_image.sql`, `src/worker/ogp.ts`, `src/worker/index.ts`, `src/client/App.tsx`, tests, and so on) appear, and that no unintended files are mixed in.
 
-If everything looks correct, choose the files to include in the Commit.
+## Create a Commit
 
-```bash
-git add src/components/BookmarkCard.tsx
-git add src/components/BookmarkCard.module.css
-```
+This time the change is one coherent unit — adding the OGP feature — so put the related files into a single Commit.
 
-To add all changes at once, you can use:
+Because there are newly created files (such as `0003_add_ogp_image.sql` and `ogp.ts`), add them explicitly with `git add`.
 
 ```bash
-git add .
+git add migrations/ src/ test/
 ```
 
-However, `git add .` adds changes under the current directory. Check `git status` first so unrelated files are not included.
-
-Create the Commit.
+Check again with `git status` that they were added, and if everything looks fine, Commit.
 
 ```bash
-git commit -m "Show OGP image in bookmark card"
+git commit -m "Show OGP images in the bookmark list"
 ```
 
-If you only changed files that Git already tracks, you can also use:
+Write the Commit message so that "what you did" is understandable when read later. Avoid messages like `Fix` or `Various changes` that say nothing about the content. This message can be reused as-is for the PR title.
+
+## Push to GitHub
+
+Send the Commit to GitHub. Since this is the first time you Push this Branch, add `-u origin branch-name`.
 
 ```bash
-git commit -am "Show OGP image in bookmark card"
+git push -u origin feature/ogp-image
 ```
 
-`git commit -a` does not include newly created files. For new files, run `git add file-name` first.
-
-Write Commit messages so that readers can understand what changed.
-
-Good examples:
-
-```text
-Show OGP image in bookmark card
-Add validation for empty URL
-Add setup steps to README
-```
-
-Unclear examples:
-
-```text
-Fix
-Update
-Various changes
-```
-
-Commits remain as history. Future you and your teammates should be able to understand what each Commit did.
+By adding `-u` on the first Push, you can send this Branch with just `git push` from then on.
 
 ## Create a PR
 
-After creating a Commit, Push the Branch to GitHub. Push sends your local Commits to the GitHub repository.
+When you open the GitHub repository page after pushing, it often shows a prompt to create a PR from `feature/ogp-image`, so click it.
 
-```bash
-git push -u origin feature/ogp-card
-```
-
-Use `-u origin branch-name` on the first Push. After that, you can Push with:
-
-```bash
-git push
-```
-
-After pushing, GitHub may show a button to create a PR.
-
-A PR is not created by local Git commands alone. First you create a Branch, Commit, and Push locally. Then you create the PR review page on GitHub.
-
-If the PR creation button does not appear, follow these steps on GitHub.
+If the prompt does not appear, do the following on GitHub.
 
 1. Open the repository page
 2. Open the `Pull requests` tab
 3. Click `New pull request`
 4. Select `main` as the base Branch
-5. Select your working Branch as the compare Branch
+5. Select `feature/ogp-image` as the compare Branch
 6. Check the diff
-7. Write the title and description
-8. Click `Create pull request`
 
-The base Branch is the target Branch. In many projects, it is `main`. The compare Branch is the Branch that contains your change.
+The base is the "target to merge into", and the compare is the "Branch that contains your change". This time the direction is as follows.
 
 ```mermaid
 flowchart LR
-  A[compare: feature/ogp-card] -->|PR| B[base: main]
+  A[compare: feature/ogp-image] -->|PR| B[base: main]
 ```
 
-Before creating the PR, read the diff on GitHub once. You may notice unintended changes or missing explanation that you missed locally.
+If you select base and compare the other way around, the diff becomes empty or you get an unintended comparison. Confirm here that the direction is `main` ← `feature/ogp-image`.
 
-## Describe the Implementation Intent
+Once the diff is confirmed, write the title and description.
 
-Write the implementation intent in the PR description. Reviewers cannot always understand why the change is needed from the code diff alone.
+### Describe the Implementation Intent
 
-At minimum, include these four sections.
+Make the title a single sentence that conveys the change at a glance. The Commit message you just wrote (`Show OGP images in the bookmark list`) is good enough to use as-is.
+
+How to write the description was explained in [GitHub Flow and PRs](github-flow-pr). For this OGP feature, write something like this.
 
 ```markdown
 ## Purpose
 
-Show OGP images so users can understand linked pages more easily in the bookmark list.
+Show OGP images as thumbnails so users can grasp the content of linked pages more easily in the bookmark list.
 
 ## Changes
 
-- Add an OGP image area to the bookmark card
-- Show a placeholder when no OGP image exists
-- Fix the image size to prevent layout shifts
+- Added a migration that adds the `ogp_image_url` column
+- Added processing that fetches the OGP image from a URL and stores it in R2
+- Fetch and store the OGP image when creating or updating a bookmark
+- Show thumbnails in the list screen
+- Added tests for the above
 
 ## Verification
 
-- `npm run typecheck`
 - `npm run build`
-- Checked the bookmark list with and without OGP images
+- `npm test`
+- Added URLs both with and without OGP images on the screen and confirmed display and saving
 
 ## Review Points
 
-- Whether the no-image state is understandable
-- Whether the image size matches the existing design
+- Whether saving a bookmark still succeeds even if OGP fetching fails
+- Whether the allowed image types and size limit are appropriate
 ```
 
-In "Purpose", write why the change is needed. In "Changes", write what you changed. In "Verification", write commands or screen operations you used. In "Review Points", write what you are unsure about or especially want reviewed.
+Writing "Verification" and "Review Points" lets the reviewer (CodeRabbit in the next chapter) know what to focus on, making the review faster and more accurate.
 
-Writing review points helps reviewers focus on the important parts. If you are unsure about the UI, say so. If you are unsure about the specification, write that too.
+### Finalize the PR
 
-## Update the PR
+Once the title and description are written, click `Create pull request`. The PR page is created, with the diff, Commits, and description all in one place.
 
-When you receive review comments, fix the code on the same Branch.
+At this point, the goal of this chapter is achieved.
+
+## Common Stumbling Points
+
+**`git push` errors out**
+
+If on the first Push you run just `git push` without `-u origin feature/ogp-image`, the destination is not set and it errors. Run it with `-u` the first time.
 
 ```bash
-git status
-git diff
-git add .
-git commit -m "Address review feedback"
-git push
+git push -u origin feature/ogp-image
 ```
 
-Pushing to the same Branch adds the Commit to the existing PR. You do not need to recreate the PR.
+**Newly created files are not in the Commit**
 
-If a reviewer asks a question, you can explain your intent before changing code. Review is a conversation for improving the change, not a one-way instruction.
-
-## Check Before Merge
-
-Before merging the PR, check the following.
-
-- The PR purpose is written in the description
-- No unrelated file changes are included
-- CI is passing
-- Required review is complete
-- Feedback has been addressed, or the reason for not addressing it is explained
-- The change has been verified locally or in the UI
-
-If everything looks good, Merge it on GitHub. After Merge, the working Branch can be deleted.
-
-Update your local environment too.
+`git commit -am` only includes files Git already tracks. This time there are new files such as `0003_add_ogp_image.sql` and `ogp.ts`, so this would miss them. Run `git add` on new files first, then Commit. After the Commit, you can check the files actually included in that Commit with the following command.
 
 ```bash
-git checkout main
-git pull
-git branch -d feature/ogp-card
+git show --name-only --oneline HEAD
 ```
 
-Even if you delete the working Branch, the PR and Commit history remain on GitHub.
+If all the files you intended are listed, you are fine.
 
-## Common Issues
+**Unrelated files are mixed into the diff**
 
-If you started working on `main`, and you have not committed yet, you can simply create a Branch at that point.
-
-```bash
-git checkout -b feature/forgot-branch
-```
-
-Even if you already committed, you can create a Branch that includes the current Commit.
-
-```bash
-git checkout -b feature/forgot-branch
-```
-
-If Push fails, check the Branch name and remote name.
-
-```bash
-git remote -v
-git branch --show-current
-```
-
-If unwanted files are staged before Commit, remove them from staging.
+`git status` or `git diff` may show files unrelated to this change (such as locally generated artifacts). Exclude anything you do not want in the Commit before running `git add`. If you already staged it, you can unstage it with the following command.
 
 ```bash
 git restore --staged file-name
 ```
 
-Reverting actual file changes can have a larger effect. In team development, check the team's rules before rewriting history or discarding work.
+**The PR diff is empty, or shows changes you don't recognize**
+
+Almost always this means base (the target) and compare (the source) were selected the other way around. Confirm that base is `main` and compare is `feature/ogp-image`.
+
+## Summary So Far
+
+In this chapter you turned the OGP feature change into a PR.
+
+- Checked the state of `feature/ogp-image` created in the previous chapter
+- Committed including the new files
+- Pushed to GitHub and created a PR pointing at `main`
+- Wrote a PR description that conveys the implementation intent
+
+You are now ready to receive a review. In the next chapter, you receive a CodeRabbit review on this PR and work through its feedback.

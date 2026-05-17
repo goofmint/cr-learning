@@ -135,7 +135,13 @@ git push -u origin feature/ogp-image
 
 **新しく作ったファイルがCommitに入っていない**
 
-`git commit -am`は、すでにGitで管理されているファイルしか含めません。今回は`0003_add_ogp_image.sql`や`ogp.ts`など新規ファイルがあるため、これだと取りこぼします。新規ファイルは先に`git add`してからCommitします。Commit後に`git status`で、入れたかったファイルがすべて含まれているか確認すると安心です。
+`git commit -am`は、すでにGitで管理されているファイルしか含めません。今回は`0003_add_ogp_image.sql`や`ogp.ts`など新規ファイルがあるため、これだと取りこぼします。新規ファイルは先に`git add`してからCommitします。Commit後は、次のコマンドでそのCommitに実際に含まれたファイル一覧を確認できます。
+
+```bash
+git show --name-only --oneline HEAD
+```
+
+入れたかったファイルがすべて並んでいれば大丈夫です。
 
 **差分に関係ないファイルが混ざっている**
 
