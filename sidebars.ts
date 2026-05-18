@@ -40,12 +40,10 @@ const sidebars: SidebarsConfig = {
     },
     {
       type: 'category',
-      label: '振り返り・発展編',
+      label: '振り返り編',
       collapsed: false,
       items: [
         'good-review',
-        'advanced-exercises',
-        'summary',
       ],
     },
   ],

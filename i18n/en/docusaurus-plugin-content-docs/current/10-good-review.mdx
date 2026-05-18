@@ -7,24 +7,84 @@ title: What Makes a Good Review?
 
 ## Goal
 
-Consider how humans should participate in review in the age of AI-assisted review.
+So far you have learned the purpose of review (What is code review?) and the role of AI review (What is AI code review?).
 
-## Feedback Alone Is Not Enough
+This chapter builds on those to organize what a good review concretely looks like, **from the reviewer's point of view**. The meaning of review and the division of roles were already covered in earlier chapters, so here we focus on the practical tips of "how a reviewer should actually write feedback to make it a good review."
 
-TODO: Explain that review should move decisions forward, not only list problems.
+## A Good Review Moves the Change Forward
 
-## Share Implementation Intent
+The biggest difference between a good review and a poor one is **whether the change moves forward**.
 
-TODO: Explain the value of sharing background, constraints, options, and tradeoffs.
+A review that only lists problems leaves the recipient wondering, "So what should I do?" The more comments there are, the harder it becomes to know where to start.
 
-## Do Not Accept AI Review Blindly
+A good review does more than find problems; it leads to the next action.
 
-TODO: Explain that humans must verify AI feedback and decide whether to adopt it.
+- Is it OK to proceed as is?
+- If it needs fixing, how should it be fixed?
+- Should it be fixed now, or is it fine to fix later?
 
-## Humans Make the Final Decision
+The goal of a review is not to point out the other person's mistakes, but to bring the change into a better state and move it forward.
 
-TODO: Explain that requirements, user impact, release judgment, and priorities remain human responsibilities.
+## Add a Severity to Each Comment
 
-## The Reviewer Role in the AI Era
+A common beginner mistake is to raise every observation with the same weight. The recipient then feels that "everything has to be fixed" and freezes.
 
-TODO: Summarize how reviewers use AI output while focusing on higher-level judgment.
+In a good review, each comment has a severity. Thinking in the following three levels makes it easy to understand.
+
+| Severity | Meaning | Examples |
+| --- | --- | --- |
+| Required | Cannot proceed without fixing | Bugs, unmet requirements, security issues |
+| Suggestion | Better to fix, but open to discussion | Design improvements, more readable ways to write |
+| Optional | Fine not to fix, close to personal preference | Minor wording, slight stylistic preferences |
+
+Just adding a severity lets the recipient decide the order of response. If it says "Optional," they know they do not have to force a fix.
+
+Being able to label minor points as "Optional" is part of a good review too. By not making everything Required, the points that truly must be fixed do not get buried.
+
+## How to Write Review Comments
+
+A good review comment has three elements.
+
+1. **A specific location**: which code is this about
+2. **A reason**: why it caught your attention
+3. **A next step**: what would be better to do (add a suggestion if possible)
+
+Let's compare with examples.
+
+A poor comment:
+
+> This is not good.
+
+This does not say where, why, or how to fix it. The recipient can only guess, and the back-and-forth increases.
+
+A good comment:
+
+> This function does two things: "saving" and "formatting for display." The responsibilities are mixed, so it will likely be hard to change later. Splitting the formatting into a separate function would make it more readable—what do you think? (Suggestion)
+
+Location, reason, improvement, and severity are all present, so the recipient can immediately think about the next action.
+
+Phrasing it as a question also works. Asking "Is this intended to do X?" lets the other person explain their intent, and helps you notice when it was your own misunderstanding. A review is not a contest of correctness; it is a place to check things together.
+
+## Putting AI Review to Use in a Good Review
+
+When you use AI review, the parts that can be checked mechanically are covered by the AI in one pass. As you learned in the earlier chapter, this lets humans concentrate on judgment such as requirements and user impact.
+
+What matters here is not copying the AI's comments verbatim. Some AI comments do not apply to this project, and some have a severity that does not match reality. To make it a good review, read the AI's comments as raw material and decide—
+
+- Is this really a problem in this project?
+- Which severity is it: Required, Suggestion, or Optional?
+- Do we adopt it or not?
+
+—then convey it after a human has judged. A flow where the AI prepares a draft and a human finalizes it by judging meaning and severity lets you balance speed and quality of review.
+
+## A Good Review Checklist
+
+Finally, here are points worth checking before and after writing a review.
+
+- Does it lead to a next action, not just list problems?
+- Did you add a severity (Required / Suggestion / Optional) to each comment?
+- Are location, reason, and improvement all present?
+- Are you conveying minor preferences as Required?
+- (When using AI review) Did a human judge the comments rather than accept them blindly?
+
+You do not have to do all of this at once. Just keeping in mind "can the person who received my comment take the next step without hesitation?" already makes reviews much better.
