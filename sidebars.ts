@@ -33,9 +33,25 @@ const sidebars: SidebarsConfig = {
       items: [
         'application-overview',
         'environment-setup',
-        'ogp-implementation',
-        'create-pull-request',
-        'experience-coderabbit-review',
+        {
+          type: 'category',
+          label: 'PRレビュー',
+          collapsed: false,
+          items: [
+            'ogp-implementation',
+            'create-pull-request',
+            'experience-coderabbit-review',
+          ],
+        },
+        {
+          type: 'category',
+          label: 'IDEレビュー',
+          collapsed: false,
+          items: [
+            'implement-tag-filter',
+            'experience-ide-review',
+          ],
+        },
       ],
     },
     {
