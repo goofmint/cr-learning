@@ -15,8 +15,16 @@
     "message": "Practice",
     "description": "The label for category 実践編 in sidebar tutorialSidebar"
   },
-  "sidebar.tutorialSidebar.category.振り返り・発展編": {
-    "message": "Reflection and Next Steps",
-    "description": "The label for category 振り返り・発展編 in sidebar tutorialSidebar"
+  "sidebar.tutorialSidebar.category.PRレビュー": {
+    "message": "PR Review",
+    "description": "The label for category PRレビュー in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.IDEレビュー": {
+    "message": "IDE Review",
+    "description": "The label for category IDEレビュー in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.振り返り編": {
+    "message": "Reflection",
+    "description": "The label for category 振り返り編 in sidebar tutorialSidebar"
   }
 }
