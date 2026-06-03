@@ -30,7 +30,7 @@ git status
 git diff
 ```
 
-`git status`で変更・追加されたファイルの一覧、`git diff`で実際の差分が見られます。前の章で触ったファイル（`migrations/0003_add_ogp_image.sql`、`src/worker/ogp.ts`、`src/worker/index.ts`、`src/client/App.tsx`、テストなど）だけが出ているか、意図しないファイルが混ざっていないかをここで見ておきます。
+`git status`で変更・追加されたファイルの一覧、`git diff`で実際の差分が見られます。前の章で触ったファイル（`migrations/0003_add_ogp_image.sql`、`src/server/ogp.ts`、`src/server/storage.ts`、`src/server/app.ts`、`src/client/App.tsx`、テストなど）だけが出ているか、意図しないファイルが混ざっていないかをここで見ておきます。
 
 ## Commitする
 
@@ -98,7 +98,7 @@ baseとcompareを逆に選ぶと差分が空になったり、意図しない比
 ## 変更内容
 
 - `ogp_image_url`列を追加するマイグレーションを作成
-- URLからOGP画像を取得しR2に保存する処理を追加
+- URLからOGP画像を取得しローカルに保存する処理を追加
 - ブックマーク作成・更新時にOGP画像を取得して保存
 - 一覧画面にサムネイルを表示
 - 上記のテストを追加

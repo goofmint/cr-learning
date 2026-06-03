@@ -9,7 +9,7 @@ title: Prepare the Development Environment
 
 Get the tools you need for the hands-on exercise ready, one at a time.
 
-When you finish this chapter, the demo application ([Bookmark Demo](https://bookmark-demo.goofmint.workers.dev/)) will run on your own computer, and you will be able to receive CodeRabbit reviews on your own GitHub repository.
+When you finish this chapter, the demo application will run on your own computer, and you will be able to receive CodeRabbit reviews on your own GitHub repository.
 
 The commands are written so you can copy and paste them as you go. Even if there is a command whose meaning you do not understand, it is fine to just run it as is for now.
 
@@ -24,10 +24,8 @@ You will prepare things in the following order. If you go from top to bottom, yo
 | [Step 3](#step-3) | Fork the demo application's repository (make your own copy) |
 | [Step 4](#step-4) | Bring the forked repository to your computer (clone) |
 | [Step 5](#step-5) | Install Node.js and get the required parts |
-| [Step 6](#step-6) | Create a Cloudflare account |
-| [Step 7](#step-7) | Create the database (D1) and image storage (R2) |
-| [Step 8](#step-8) | Start the application locally and verify it works |
-| [Step 9](#step-9) | Enable CodeRabbit on your repository |
+| [Step 6](#step-6) | Start the application locally and verify it works |
+| [Step 7](#step-7) | Enable CodeRabbit on your repository |
 
 :::note[Glossary]
 **Repository**: A place that stores source code together with its change history. It is hosted on GitHub.
@@ -137,7 +135,7 @@ First, check whether it is installed.
 node --version
 ```
 
-If `v20.0.0` or higher is shown, you are OK. If nothing is shown, or the number is smaller than 20, download and install the **LTS version** from the [official Node.js site](https://nodejs.org/) (the options can be left at their defaults).
+If `v22.5.0` or higher is shown, you are OK. If nothing is shown, or the number is smaller than 22.5, download and install the **LTS version** from the [official Node.js site](https://nodejs.org/) (the options can be left at their defaults).
 
 Next, install all the parts (libraries) the application needs to run, in one go. Run the following inside the `bookmark-demo` folder.
 
@@ -149,84 +147,7 @@ npm install
 **npm** is a tool for managing parts for Node.js. `npm install` looks at the list of parts this application needs (`package.json`) and automatically downloads the required ones together. It may take a little time.
 :::
 
-## 6. Create a Cloudflare Account \{#step-6}
-
-This application runs on a service called **Cloudflare**. The database and image storage also use Cloudflare's, so an account is required.
-
-If you already have an account, just do the login steps.
-
-1. Open [Cloudflare Dashboard | Manage Your Account](https://dash.cloudflare.com/sign-up)
-2. Enter your email address and password to register
-3. Click the link in the confirmation email you receive to verify your email
-
-The free plan is fine.
-
-Next, log in so you can operate Cloudflare from your computer. When you run the following command, a browser opens and asks for permission, so click "Allow".
-
-```bash
-npx wrangler login
-```
-
-:::note[Glossary]
-**Wrangler** is a tool for operating Cloudflare from the command line. `npx` is a command runner bundled with npm (since npm v5.2.0) that can run locally or globally installed packages directly. npm itself was installed together with Node.js in [Step 5](#step-5).
-:::
-
-## 7. Create the Database and Image Storage \{#step-7}
-
-This application uses a **database (Cloudflare D1)** to save bookmarks and **storage (Cloudflare R2)** to save OGP images. You create your own.
-
-First, create the database (D1).
-
-```bash
-npx wrangler d1 create bookmark-demo
-```
-
-When you run it, a configuration like the following is shown on the screen.
-
-```toml
-[[d1_databases]]
-binding = "DB"
-database_name = "bookmark-demo"
-database_id = "a long alphanumeric string is shown here"
-```
-
-Copy the value of this `database_id` (the content inside the `"..."`).
-
-Next, open the file `wrangler.toml` in the folder with a text editor. Find the `database_id` line under `[[d1_databases]]`, replace its value with the value you just copied, and save.
-
-```toml
-[[d1_databases]]
-binding = "DB"
-database_name = "bookmark-demo"
-database_id = "replace with your own copied value"
-migrations_dir = "migrations"
-```
-
-:::note[Why replace it]
-`database_id` is like an address that points to "which database to use." At first it points to someone else's database, so you need to replace it with the address of the database you created.
-:::
-
-Once replaced, create the tables you need inside the database. Run the following command.
-
-```bash
-npx wrangler d1 migrations apply bookmark-demo --local
-```
-
-`--local` means "run this against the database used only inside your own computer."
-
-:::note[Glossary]
-**Migration**: The work of applying a blueprint that says "create tables like this" to a database. Without doing this, the application has no place to save data and gets an error.
-:::
-
-Finally, create the storage (R2) for saving OGP images.
-
-```bash
-npx wrangler r2 bucket create bookmark-demo-ogp
-```
-
-The database and image storage are now ready. In the next step, you verify local startup.
-
-## 8. Start Locally and Verify It Works \{#step-8}
+## 6. Start Locally and Verify It Works \{#step-6}
 
 First, build the application (assemble it into a runnable form).
 
@@ -240,7 +161,13 @@ If it finishes without errors, start the local server.
 npm run dev
 ```
 
-On success, a URL like `http://localhost:8787` is shown in the terminal. Open that URL in a browser. If the Bookmark Demo screen appears and you can add a bookmark by entering a URL, it is a success.
+On success, a URL like `http://127.0.0.1:5173` is shown in the terminal. Open that URL in a browser. If the Bookmark Demo screen appears and you can add a bookmark by entering a URL, it is a success.
+
+The API server runs at `http://127.0.0.1:8787`. Vite proxies `/api` and `/ogp` requests to the API server, so you only need to open the Vite URL in your browser.
+
+:::note[Local data]
+On first startup, the server automatically creates the SQLite file `data/bookmarks.sqlite` and the OGP image folder `data/ogp/`. SQL files in `migrations/` are also applied automatically when the server starts.
+:::
 
 ![The Bookmark Demo screen started locally, with a URL input field and an "Add Bookmark" button](/img/demo-initial.jpg)
 
@@ -256,7 +183,7 @@ npm test
 
 If all the tests pass, it is a sign that the environment is set up correctly.
 
-## 9. Enable CodeRabbit (OSS Version) \{#step-9}
+## 7. Enable CodeRabbit (OSS Version) \{#step-7}
 
 Finally, set things up so you can receive **CodeRabbit** reviews on your repository. Here we configure it with the free method for open source (the OSS version).
 

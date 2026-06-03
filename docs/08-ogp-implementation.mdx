@@ -34,7 +34,7 @@ OGPはHTMLの`<head>`内に、次のような`<meta>`タグとして書かれて
 今回はこのうち **`og:image`（ページの代表画像）** を取得して、ブックマーク一覧にサムネイルとして表示します。
 
 :::note[なぜ画像をそのまま使わず保存するのか]
-他サイトの画像URLを直接`<img src>`に指定すると、相手サイトが画像を消したり差し替えたりした瞬間に、こちらの表示も壊れます。これを避けるため、今回は**画像を一度自分の保管場所（Cloudflare R2）にコピーしてから表示**します。R2は[開発環境を準備する](environment-setup)の手順7ですでに作成済みです。
+他サイトの画像URLを直接`<img src>`に指定すると、相手サイトが画像を消したり差し替えたりした瞬間に、こちらの表示も壊れます。これを避けるため、今回は**画像を一度ローカルの保管場所（`data/ogp/`）にコピーしてから表示**します。このフォルダはアプリ起動時に自動で作られます。
 :::
 
 ## 今回実装する範囲 \{#scope}
@@ -44,8 +44,8 @@ OGPはHTMLの`<head>`内に、次のような`<meta>`タグとして書かれて
 | # | やること | 主に変わるファイル |
 | --- | --- | --- |
 | 1 | ブックマークに「OGP画像のパス」を保存する列を追加する | `migrations/0003_add_ogp_image.sql`（新規） |
-| 2 | URLからOGP画像を取得してR2に保存する処理を作る | `src/worker/ogp.ts`（新規） |
-| 3 | ブックマーク追加・更新時に2を呼び出し、画像を配信するAPIを足す | `src/worker/index.ts`、`src/shared/bookmarks.ts` |
+| 2 | URLからOGP画像を取得してローカルに保存する処理を作る | `src/server/ogp.ts`、`src/server/storage.ts` |
+| 3 | ブックマーク追加・更新時に2を呼び出し、画像を配信するAPIを足す | `src/server/app.ts`、`src/shared/bookmarks.ts` |
 | 4 | 一覧画面にサムネイルを表示する | `src/client/App.tsx`、`src/client/styles.css` |
 | 5 | 1〜4のテストを追加する | `test/ogp.test.ts`（新規）ほか |
 
@@ -54,7 +54,7 @@ OGPはHTMLの`<head>`内に、次のような`<meta>`タグとして書かれて
 - OGP画像の取得は **おまけ（best-effort）** とする。画像が無い・取得に失敗したページでも、ブックマークの保存自体は必ず成功させる。
 - 画像が無い場合は、OGP画像のパスを **空文字** にして、一覧ではサムネイルを表示しない。
 - 保存する画像は **本物の画像ファイル（PNG/JPEG/WebP/GIF/AVIF）** だけにする。サイズが大きすぎるものは保存しない。
-- R2は外部公開しない。画像は **Worker経由で配信** する。
+- 保存した画像は直接公開せず、APIの `/ogp/:name` 経由で配信する。
 
 ## 実装の全体像 \{#flow}
 
@@ -65,7 +65,7 @@ flowchart TD
   A[ユーザーがURLを追加] --> B[リンク先のHTMLを取得]
   B --> C{og:image はある?}
   C -- ない/失敗 --> E[画像パスは空文字のまま保存]
-  C -- ある --> D[画像を取得しR2に保存]
+  C -- ある --> D[画像を取得しdata/ogp/に保存]
   D --> F[画像パスをDBに保存]
   E --> G[一覧表示: 画像なし]
   F --> H[一覧表示: サムネイルあり]
@@ -88,7 +88,7 @@ AIコーディングツールを、この`bookmark-demo`フォルダで開きま
 :::note[AIに前提を伝えるコツ]
 プロンプトの最初に「どんなアプリか」を一言添えると、AIの精度が上がります。次の一文を、各プロンプトの前に付けて使うとよいです。
 
-> これは Hono + React + Cloudflare Workers/D1/R2 で動くブックマークアプリです。データベースはD1、画像保存はR2バインディング名 `OGP_BUCKET` を使います。既存のコードのスタイルとコメントの粒度に合わせてください。
+> これは Node.js + Hono + React + SQLite で動くローカル用のブックマークアプリです。データベースは `data/bookmarks.sqlite`、OGP画像は `data/ogp/` に保存します。既存のコードのスタイルとコメントの粒度に合わせてください。
 :::
 
 ## サンプルプロンプト \{#prompts}
@@ -104,16 +104,12 @@ NOT NULL で、デフォルト値は空文字 '' にしてください。
 既存の行や seed データには og:image が無いので、空文字で問題ないことをコメントで説明してください。
 ```
 
-作成できたら、ローカルのデータベースに反映します。
-
-```bash
-npx wrangler d1 migrations apply bookmark-demo --local
-```
+作成できたら、次にサーバーを起動したときにマイグレーションが自動で適用されます。
 
 ### ステップ2：OGP画像を取得して保存する処理
 
 ```prompt
-src/worker/ogp.ts を新規作成してください。次の関数をエクスポートします。
+src/server/ogp.ts と src/server/storage.ts を必要に応じて変更してください。次の関数を用意します。
 
 1. extractOgImageUrl(html, baseUrl): HTML文字列から最初の og:image のURLを取り出す。
    - <meta> タグを走査し、property または name が "og:image"（"og:image:url" も可）のものを探す
@@ -122,14 +118,14 @@ src/worker/ogp.ts を新規作成してください。次の関数をエクス�
    - http/https 以外は null を返す
    - 見つからなければ null を返す
 
-2. storeOgpImage(pageUrl, bucket, fetcher = fetch): 戻り値は string。
+2. storeOgpImage(pageUrl, storageDir, fetcher = fetch): 戻り値は string。
    - pageUrl の HTML を取得（タイムアウト5秒、User-Agent を付ける）
    - content-type が text/html でなければ "" を返す
    - extractOgImageUrl で画像URLを取得、無ければ "" を返す
    - 画像を取得し、content-type が image/png, image/jpeg, image/webp, image/gif,
      image/avif のいずれかでなければ "" を返す
    - サイズが0、または5MB超なら "" を返す
-   - crypto.randomUUID() を使って ogp/<uuid>.<拡張子> というキーで R2 に put する
+   - crypto.randomUUID() を使って <uuid>.<拡張子> というファイル名を作り、`storageDir` に保存する
    - 保存したパス "/ogp/<uuid>.<拡張子>" を返す
    - どこかで失敗したら必ず "" を返す（ブックマーク保存を止めないため）
 
@@ -146,12 +142,12 @@ src/worker/ogp.ts を新規作成してください。次の関数をエクス�
 ```prompt
 src/shared/bookmarks.ts の Bookmark 型に ogpImageUrl: string を追加してください。
 
-src/worker/index.ts を次のように変更してください。
+src/server/app.ts を次のように変更してください。
 - BookmarkRow 型と toBookmark に ogp_image_url / ogpImageUrl を追加（既存行は "" にフォールバック）
 - 一覧取得・作成・更新の SQL に ogp_image_url 列を追加
 - POST /api/bookmarks と PUT /api/bookmarks/:id で、保存前に
-  storeOgpImage(url, c.env.OGP_BUCKET) を呼び、その戻り値を ogp_image_url として保存
-- GET /ogp/:name ルートを追加。R2 から ogp/<name> を get し、
+  storeOgpImage(url, storageDir) を呼び、その戻り値を ogp_image_url として保存
+- GET /ogp/:name ルートを追加。ローカル保存した画像を読み込み、
   無ければ 404 JSON、あれば content-type を引き継いで返す。
   cache-control: public, max-age=86400, immutable を付ける
 
@@ -247,18 +243,12 @@ https://github.com/goofmint/bookmark-demo/archive/refs/heads/feat/ogp-image.zip
 具体的には、自分の`bookmark-demo`フォルダにある`src`・`migrations`・`test`をいったん削除し、解凍したフォルダの`src`・`migrations`・`test`をそのままコピーして入れます。
 
 :::warning[置き換えるのはこの3フォルダだけ]
-解凍フォルダを**丸ごと**コピーしないでください。`wrangler.toml`の`database_id`など、自分用に設定した値まで上書きされてしまいます（[開発環境を準備する](environment-setup)の手順7で設定した値です）。これらの設定ファイルはルート（`bookmark-demo`直下）にあり、上の3フォルダには含まれないので、3フォルダだけの置き換えなら自分の設定は保たれます。
+解凍フォルダを**丸ごと**コピーしないでください。今回の学習で見る差分は `src`・`migrations`・`test` に集中しています。3フォルダだけを置き換えれば、`package.json` などのルート直下のファイルを意図せず上書きせずに済みます。
 :::
 
 ### 3. 反映して動作確認する
 
-差し替えたら、新しいマイグレーションをデータベースに反映します。
-
-```bash
-npx wrangler d1 migrations apply bookmark-demo --local
-```
-
-続けて、ビルドとテストを実行します。
+差し替えたら、ビルドとテストを実行します。
 
 ```bash
 npm run build
@@ -275,7 +265,7 @@ npm test
 npm run dev
 ```
 
-表示されたURL（`http://localhost:8787`など）をブラウザで開き、次を確認します。
+表示されたViteのURL（`http://127.0.0.1:5173`など）をブラウザで開き、次を確認します。
 
 - OGP画像があるページのURL（ニュース記事やブログ記事など）を追加すると、一覧にサムネイルが表示される
 - OGP画像が無いページを追加しても、エラーにならずブックマークが保存される（サムネイルは出ない）
