@@ -9,7 +9,7 @@ title: Prepare the Development Environment
 
 Get the tools you need for the hands-on exercise ready, one at a time.
 
-When you finish this chapter, the demo application will run on your own computer, and you will be able to receive CodeRabbit reviews on your own GitHub repository.
+When you finish this chapter, you will be able to start the demo application locally.
 
 The commands are written so you can copy and paste them as you go. Even if there is a command whose meaning you do not understand, it is fine to just run it as is for now.
 
@@ -25,7 +25,6 @@ You will prepare things in the following order. If you go from top to bottom, yo
 | [Step 4](#step-4) | Bring the forked repository to your computer (clone) |
 | [Step 5](#step-5) | Install Node.js and get the required parts |
 | [Step 6](#step-6) | Start the application locally and verify it works |
-| [Step 7](#step-7) | Enable CodeRabbit on your repository |
 
 :::note[Glossary]
 **Repository**: A place that stores source code together with its change history. It is hosted on GitHub.
@@ -183,24 +182,6 @@ npm test
 
 If all the tests pass, it is a sign that the environment is set up correctly.
 
-## 7. Enable CodeRabbit (OSS Version) \{#step-7}
-
-Finally, set things up so you can receive **CodeRabbit** reviews on your repository. Here we configure it with the free method for open source (the OSS version).
-
-1. While logged in to GitHub, open the [CodeRabbit GitHub Marketplace page](https://github.com/marketplace/coderabbitai)
-2. Click the **"Add"** button on the page
-3. From the plan options, choose **"Open Source"**
-4. As the install destination, choose your own account that has the repository you forked in [Step 3](#step-3)
-5. Check the box **"Allow my billing information to be linked with this organization"**
-6. For the target repository selection, choose `bookmark-demo` ("All repositories" is also fine. You can change this later.)
-7. When you complete the installation, you are moved to the CodeRabbit dashboard and your repository is shown
-
-From now on, whenever you create a Pull Request (PR) in this repository of yours, CodeRabbit will automatically review it.
-
-:::note[Note]
-The OSS version setup steps are also introduced in detail, with screen images, in the article "[Introducing CodeRabbit for free for OSS](https://qiita.com/goofmint/items/e4ab57e6bf4d8f98ea5c)" (in Japanese). Refer to it if the screen has changed and it is hard to follow.
-:::
-
 ## Recap So Far
 
 You have now prepared the following.
@@ -208,6 +189,6 @@ You have now prepared the following.
 - Git and a GitHub account
 - The `bookmark-demo` repository forked for yourself
 - The demo application running locally
-- CodeRabbit running on your repository
+- The SQLite database and OGP image storage folder that are created automatically locally
 
-From the next chapter, you will implement the OGP fetching feature in this application, turn that change into a Pull Request, and receive CodeRabbit reviews.
+In the next chapter, you will enable CodeRabbit on your forked repository, then implement the OGP fetching feature and receive a review as a Pull Request.
