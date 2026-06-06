@@ -11,9 +11,8 @@ Understand the overview of the demo application used in this hands-on.
 
 In this chapter, you first nail down what you are going to build on top of an existing demo application. Detailed environment setup and how to start the app are covered in the next chapter, "Preparing the Development Environment."
 
-You can check the demo application at the following URLs.
+You can check the demo application repository at the following URL. You will clone and run the app locally in the next chapter.
 
-- Demo application: [https://bookmark-demo.goofmint.workers.dev/](https://bookmark-demo.goofmint.workers.dev/)
 - Repository: [https://github.com/goofmint/bookmark-demo](https://github.com/goofmint/bookmark-demo)
 
 ## What is Bookmark Demo?
@@ -40,18 +39,15 @@ In this chapter, you first understand what feature will be added. The implementa
 
 ## Technologies Used
 
-Bookmark Demo is a web application that builds its screens with React, builds its API with Hono, and runs on Cloudflare Workers. The frontend and the API run as a single application.
+Bookmark Demo is a local web application that builds its screens with React, builds its API with Hono, and runs on Node.js. The frontend starts with Vite, and the API starts as a local server.
 
 | Technology | Its role in this application |
 | --- | --- |
 | [React](https://react.dev/) | Builds the screens in the browser |
 | [Vite](https://vite.dev/) | Develops and builds the React application |
 | [TypeScript](https://www.typescriptlang.org/) | Writes JavaScript safely using types |
-| [Hono](https://hono.dev/) | Builds the API on Cloudflare Workers |
-| [Cloudflare Workers](https://developers.cloudflare.com/workers/) | A serverless runtime that runs the API and serves static files |
-| [Cloudflare D1](https://developers.cloudflare.com/d1/) | A SQLite-based database that stores bookmarks |
-| [Cloudflare R2](https://developers.cloudflare.com/r2/) | Object storage prepared for saving OGP images |
-| [Wrangler](https://developers.cloudflare.com/workers/wrangler/) | A CLI for operating Cloudflare Workers, D1, and R2 |
+| [Hono](https://hono.dev/) | Builds the API on Node.js |
+| [SQLite](https://www.sqlite.org/) | Stores bookmarks in a local database |
 | [Vitest](https://vitest.dev/) | Runs API and UI tests |
 
 ## System Architecture
@@ -61,15 +57,15 @@ The overall flow of the application is as follows.
 ```mermaid
 flowchart LR
   U[User] --> C[React screen]
-  C -->|fetch| A[Hono API on Cloudflare Workers]
-  A -->|Save / Search| D[(Cloudflare D1)]
+  C -->|fetch| A[Hono API on Node.js]
+  A -->|Save / Search| D[(SQLite)]
   A -->|Fetch HTML| W[External web page]
-  A -.Future OGP image storage.-> R[(Cloudflare R2)]
+  A -->|Save OGP image| R[(data/ogp/)]
 ```
 
-When displaying the bookmark list, the React screen calls `/api/bookmarks`. The API reads the bookmarks from D1 and returns them as JSON.
+When displaying the bookmark list, the React screen calls `/api/bookmarks`. The API reads the bookmarks from SQLite and returns them as JSON.
 
-When adding a bookmark, the React screen sends the URL to the API. The API normalizes the URL, fetches the `<title>` of the linked page, and saves it to D1.
+When adding a bookmark, the React screen sends the URL to the API. The API normalizes the URL, fetches the `<title>` of the linked page, and saves it to SQLite. If it finds an OGP image, it stores the image file locally under `data/ogp/`.
 
 ## Why Use This Subject
 

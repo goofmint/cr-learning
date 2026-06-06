@@ -48,7 +48,7 @@ A short, human-oriented summary that classifies the changes into categories such
 
 A prose summary of the entire change.
 
-> Added a required `ogpImageUrl` to the DB, processing for OGP extraction and R2 storage, a Worker endpoint to store and serve images, the client implementation and CSS for thumbnail display, and tests for whether it is displayed.
+> Added a required `ogpImageUrl` to the DB, processing for OGP extraction and local storage, an API endpoint to store and serve images, the client implementation and CSS for thumbnail display, and tests for whether it is displayed.
 
 ### Changes
 
@@ -56,9 +56,9 @@ A table that organizes, one line at a time, what was done in which file. You can
 
 | Target file | Content |
 | --- | --- |
-| `src/shared/bookmarks.ts`, `migrations/0003_add_ogp_image.sql`, `src/worker/index.ts` | Added a required `ogpImageUrl` to the `Bookmark` type. Added an `ogp_image_url` column (NOT NULL, default `''`) via migration. Reflected the column in the Worker's list query. |
-| `src/worker/ogp.ts`, `test/ogp.test.ts` | Newly added `extractOgImageUrl` / `fetchWithTimeout` / `storeOgpImage`. Extracts og:image, validates MIME and size, stores to R2, and returns a delivery path or an empty string. Tests added too. |
-| `src/worker/index.ts`, `test/worker.test.ts` | Calls `storeOgpImage` on POST/PUT and serves the R2 image via `GET /ogp/:name`. Tests added too. |
+| `src/shared/bookmarks.ts`, `migrations/0003_add_ogp_image.sql`, `src/server/app.ts` | Added a required `ogpImageUrl` to the `Bookmark` type. Added an `ogp_image_url` column (NOT NULL, default `''`) via migration. Reflected the column in the API's list query. |
+| `src/server/ogp.ts`, `src/server/storage.ts`, `test/ogp.test.ts` | Added `extractOgImageUrl` / `fetchWithTimeout` / `storeOgpImage`. Extracts og:image, validates MIME and size, stores the image as a local file, and returns a delivery path or an empty string. Tests added too. |
+| `src/server/app.ts`, `test/worker.test.ts` | Calls `storeOgpImage` on POST/PUT and serves the saved image via `GET /ogp/:name`. Tests added too. |
 | `src/client/App.tsx`, `src/client/styles.css`, `test/App.test.tsx` | Shows a lazy-loaded thumbnail only when `ogpImageUrl` exists. Added CSS and a test for whether it is displayed. |
 | `.gitignore` | Added `.tmp` to the exclusion list. |
 
@@ -69,31 +69,31 @@ The flow of processing is shown as a diagram (sequence diagram).
 ```mermaid
 sequenceDiagram
   participant Client
-  participant Worker
+  participant API
   participant OGPService
   participant PageServer
-  participant R2
+  participant Storage
 
-  Client->>Worker: POST /api/bookmarks (url)
-  Worker->>OGPService: storeOgpImage(url)
+  Client->>API: POST /api/bookmarks (url)
+  API->>OGPService: storeOgpImage(url)
   OGPService->>PageServer: fetch(page URL)
   PageServer-->>OGPService: HTML
   OGPService->>OGPService: extractOgImageUrl
   OGPService->>PageServer: fetch(og:image URL)
   PageServer-->>OGPService: image bytes
-  OGPService->>R2: put(ogp/<uuid>.<ext>, bytes, contentType)
-  R2-->>OGPService: stored
-  OGPService-->>Worker: /ogp/<uuid>.<ext>
-  Worker->>Worker: INSERT/UPDATE bookmark with ogp_image_url
-  Worker-->>Client: {id, url, ogpImageUrl: "/ogp/<uuid>.<ext>"}
+  OGPService->>Storage: writeFile(<uuid>.<ext>, bytes)
+  Storage-->>OGPService: stored
+  OGPService-->>API: /ogp/<uuid>.<ext>
+  API->>API: INSERT/UPDATE bookmark with ogp_image_url
+  API-->>Client: {id, url, ogpImageUrl: "/ogp/<uuid>.<ext>"}
 
-  Client->>Worker: GET /ogp/<uuid>.<ext>
-  Worker->>R2: get(ogp/<uuid>.<ext>)
-  R2-->>Worker: body + metadata
-  Worker-->>Client: image bytes (content-type, etag, cache-control: immutable)
+  Client->>API: GET /ogp/<uuid>.<ext>
+  API->>Storage: readFile(<uuid>.<ext>)
+  Storage-->>API: body + metadata
+  API-->>Client: image bytes (content-type, etag, cache-control: immutable)
 ```
 
-You can follow the flow of "register URL → fetch page → extract og:image → store to R2 → show in list" without reading the code.
+You can follow the flow of "register URL → fetch page → extract og:image → store locally → show in list" without reading the code.
 
 ### Estimated code review effort
 

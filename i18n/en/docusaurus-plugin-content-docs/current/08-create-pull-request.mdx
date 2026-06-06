@@ -30,7 +30,7 @@ git status
 git diff
 ```
 
-`git status` shows the list of changed and added files, and `git diff` shows the actual diff. Check here that only the files you touched in the previous chapter (`migrations/0003_add_ogp_image.sql`, `src/worker/ogp.ts`, `src/worker/index.ts`, `src/client/App.tsx`, tests, and so on) appear, and that no unintended files are mixed in.
+`git status` shows the list of changed and added files, and `git diff` shows the actual diff. Check here that only the files you touched in the previous chapter (`migrations/0003_add_ogp_image.sql`, `src/server/ogp.ts`, `src/server/storage.ts`, `src/server/app.ts`, `src/client/App.tsx`, tests, and so on) appear, and that no unintended files are mixed in.
 
 ## Create a Commit
 
@@ -98,7 +98,7 @@ Show OGP images as thumbnails so users can grasp the content of linked pages mor
 ## Changes
 
 - Added a migration that adds the `ogp_image_url` column
-- Added processing that fetches the OGP image from a URL and stores it in R2
+- Added processing that fetches the OGP image from a URL and stores it locally
 - Fetch and store the OGP image when creating or updating a bookmark
 - Show thumbnails in the list screen
 - Added tests for the above

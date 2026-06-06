@@ -34,7 +34,7 @@ OGP is written inside the HTML `<head>` as `<meta>` tags like the following.
 This time, of these, we fetch **`og:image` (the representative image of the page)** and display it as a thumbnail in the bookmark list.
 
 :::note[Why store the image instead of using it directly]
-If you point an `<img src>` directly at another site's image URL, the moment that site deletes or replaces the image, your display breaks too. To avoid this, this time we **copy the image to our own storage (Cloudflare R2) once and then display it**. R2 was already created in step 7 of [Prepare the Development Environment](environment-setup).
+If you point an `<img src>` directly at another site's image URL, the moment that site deletes or replaces the image, your display breaks too. To avoid this, this time we **copy the image to local storage (`data/ogp/`) once and then display it**. This folder is created automatically when the app starts.
 :::
 
 ## Scope of This Implementation \{#scope}
@@ -44,8 +44,8 @@ This time we add the following five things.
 | # | What to do | Mainly changed files |
 | --- | --- | --- |
 | 1 | Add a column to bookmarks that stores the OGP image path | `migrations/0003_add_ogp_image.sql` (new) |
-| 2 | Create the process that fetches an OGP image from a URL and stores it in R2 | `src/worker/ogp.ts` (new) |
-| 3 | Call 2 when adding/updating a bookmark, and add an API to serve the image | `src/worker/index.ts`, `src/shared/bookmarks.ts` |
+| 2 | Create the process that fetches an OGP image from a URL and stores it locally | `src/server/ogp.ts`, `src/server/storage.ts` |
+| 3 | Call 2 when adding/updating a bookmark, and add an API to serve the image | `src/server/app.ts`, `src/shared/bookmarks.ts` |
 | 4 | Show the thumbnail on the list screen | `src/client/App.tsx`, `src/client/styles.css` |
 | 5 | Add tests for 1–4 | `test/ogp.test.ts` (new) and others |
 
@@ -54,7 +54,7 @@ The feature policy is as follows. This becomes the "spec" you hand to the AI, so
 - OGP image fetching is **best-effort**. Even for a page with no image or where fetching fails, saving the bookmark itself must always succeed.
 - When there is no image, set the OGP image path to an **empty string** and do not show a thumbnail in the list.
 - Only store **real image files (PNG/JPEG/WebP/GIF/AVIF)**. Do not store files that are too large.
-- Do not expose R2 publicly. Serve images **through the Worker**.
+- Do not expose saved images directly. Serve them through the `/ogp/:name` API.
 
 ## The Overall Implementation \{#flow}
 
@@ -65,7 +65,7 @@ flowchart TD
   A[User adds a URL] --> B[Fetch the linked HTML]
   B --> C{Is there an og:image?}
   C -- No / failed --> E[Save with the image path empty]
-  C -- Yes --> D[Fetch the image and store it in R2]
+  C -- Yes --> D[Fetch the image and store it in data/ogp/]
   D --> F[Save the image path to the DB]
   E --> G[List view: no image]
   F --> H[List view: with thumbnail]
@@ -88,7 +88,7 @@ Open your AI coding tool in this `bookmark-demo` folder.
 :::note[Tip for telling the AI the context]
 Adding a sentence about "what kind of app this is" at the start of the prompt improves the AI's accuracy. It is good to prepend the following sentence to each prompt.
 
-> This is a bookmark app running on Hono + React + Cloudflare Workers/D1/R2. The database is D1, and image storage uses the R2 binding name `OGP_BUCKET`. Match the existing code's style and comment granularity.
+> This is a local bookmark app running on Node.js + Hono + React + SQLite. The database is `data/bookmarks.sqlite`, and OGP images are stored under `data/ogp/`. Match the existing code's style and comment granularity.
 :::
 
 ## Sample Prompts \{#prompts}
@@ -105,16 +105,12 @@ Existing rows and the seed data have no og:image, so explain in a comment
 that the empty string is fine for them.
 ```
 
-Once created, apply it to the local database.
-
-```bash
-npx wrangler d1 migrations apply bookmark-demo --local
-```
+Once created, the migration is applied automatically the next time the server starts.
 
 ### Step 2: The process that fetches and stores the OGP image
 
 ```prompt
-Create src/worker/ogp.ts as a new file. Export the following functions.
+Update src/server/ogp.ts and src/server/storage.ts as needed. Provide the following functions.
 
 1. extractOgImageUrl(html, baseUrl): extract the first og:image URL from an
    HTML string.
@@ -125,14 +121,14 @@ Create src/worker/ogp.ts as a new file. Export the following functions.
    - Return null for anything other than http/https
    - Return null if none is found
 
-2. storeOgpImage(pageUrl, bucket, fetcher = fetch): the return value is a string.
+2. storeOgpImage(pageUrl, storageDir, fetcher = fetch): the return value is a string.
    - Fetch the HTML of pageUrl (5-second timeout, send a User-Agent)
    - Return "" if the content-type is not text/html
    - Get the image URL with extractOgImageUrl; return "" if none
    - Fetch the image; return "" if the content-type is not one of
      image/png, image/jpeg, image/webp, image/gif, image/avif
    - Return "" if the size is 0 or over 5MB
-   - Use crypto.randomUUID() to put it in R2 with the key ogp/<uuid>.<ext>
+   - Use crypto.randomUUID() to create a <uuid>.<ext> filename and save it under `storageDir`
    - Return the stored path "/ogp/<uuid>.<ext>"
    - If anything fails, always return "" (so it does not block saving the bookmark)
 
@@ -149,13 +145,13 @@ So that in tests you can inject fake responses without making real network reque
 ```prompt
 Add ogpImageUrl: string to the Bookmark type in src/shared/bookmarks.ts.
 
-Change src/worker/index.ts as follows.
+Change src/server/app.ts as follows.
 - Add ogp_image_url / ogpImageUrl to the BookmarkRow type and toBookmark
   (fall back to "" for existing rows)
 - Add the ogp_image_url column to the list/create/update SQL
 - In POST /api/bookmarks and PUT /api/bookmarks/:id, before saving call
-  storeOgpImage(url, c.env.OGP_BUCKET) and save its return value as ogp_image_url
-- Add a GET /ogp/:name route. Get ogp/<name> from R2; return 404 JSON if
+  storeOgpImage(url, storageDir) and save its return value as ogp_image_url
+- Add a GET /ogp/:name route. Read the locally saved image; return 404 JSON if
   missing, otherwise return it carrying over the content-type.
   Add cache-control: public, max-age=86400, immutable
 
@@ -252,18 +248,12 @@ This time's changes all fit inside the following three folders. Use these three 
 Concretely, delete `src`, `migrations`, and `test` in your own `bookmark-demo` folder once, and copy in `src`, `migrations`, and `test` from the unzipped folder as-is.
 
 :::warning[Replace only these three folders]
-Do not copy the unzipped folder **wholesale**. Values you configured for yourself, such as `database_id` in `wrangler.toml`, would be overwritten too (the value set in step 7 of [Prepare the Development Environment](environment-setup)). These config files are at the root (directly under `bookmark-demo`) and are not included in the three folders above, so replacing only the three folders keeps your settings.
+Do not copy the unzipped folder **wholesale**. The diff you inspect in this hands-on is concentrated in `src`, `migrations`, and `test`. Replacing only these three folders avoids unintentionally overwriting root files such as `package.json`.
 :::
 
 ### 3. Apply and Verify
 
-Once swapped, apply the new migration to the database.
-
-```bash
-npx wrangler d1 migrations apply bookmark-demo --local
-```
-
-Then run the build and the tests.
+Once swapped, run the build and the tests.
 
 ```bash
 npm run build
@@ -280,7 +270,7 @@ Start the local server.
 npm run dev
 ```
 
-Open the displayed URL (such as `http://localhost:8787`) in your browser and check the following.
+Open the displayed Vite URL (such as `http://127.0.0.1:5173`) in your browser and check the following.
 
 - When you add a URL of a page that has an OGP image (a news or blog article, etc.), a thumbnail appears in the list
 - Even when you add a page with no OGP image, it does not error and the bookmark is saved (no thumbnail appears)

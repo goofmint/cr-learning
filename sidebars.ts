@@ -38,6 +38,7 @@ const sidebars: SidebarsConfig = {
           label: 'PRレビュー',
           collapsed: false,
           items: [
+            'coderabbit-setup',
             'ogp-implementation',
             'create-pull-request',
             'experience-coderabbit-review',
@@ -48,6 +49,7 @@ const sidebars: SidebarsConfig = {
           label: 'IDEレビュー',
           collapsed: false,
           items: [
+            'vscode-extension-setup',
             'implement-tag-filter',
             'experience-ide-review',
           ],

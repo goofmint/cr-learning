@@ -48,7 +48,7 @@ PRを作成した直後、またはPRに新しいCommitをPushした直後に、
 
 変更全体を文章で要約したものです。
 
-> DBに必須の`ogpImageUrl`を持たせ、OGP抽出とR2保存の処理、画像を保存・配信するWorkerのエンドポイント、サムネイル表示のクライアント実装とCSS、表示有無のテストを追加した。
+> DBに必須の`ogpImageUrl`を持たせ、OGP抽出とローカル保存の処理、画像を保存・配信するAPIエンドポイント、サムネイル表示のクライアント実装とCSS、表示有無のテストを追加した。
 
 ### Changes
 
@@ -56,9 +56,9 @@ PRを作成した直後、またはPRに新しいCommitをPushした直後に、
 
 | 対象ファイル | 内容 |
 | --- | --- |
-| `src/shared/bookmarks.ts`, `migrations/0003_add_ogp_image.sql`, `src/worker/index.ts` | `Bookmark`型に必須の`ogpImageUrl`を追加。マイグレーションで`ogp_image_url`列（NOT NULL、デフォルト`''`）を追加。Workerの一覧クエリにも列を反映。 |
-| `src/worker/ogp.ts`, `test/ogp.test.ts` | `extractOgImageUrl` / `fetchWithTimeout` / `storeOgpImage`を新規追加。og:image抽出、MIME・サイズ検証、R2への保存を行い、配信パスか空文字を返す。テストも追加。 |
-| `src/worker/index.ts`, `test/worker.test.ts` | POST/PUTで`storeOgpImage`を呼び出し、`GET /ogp/:name`でR2の画像を配信。テストも追加。 |
+| `src/shared/bookmarks.ts`, `migrations/0003_add_ogp_image.sql`, `src/server/app.ts` | `Bookmark`型に必須の`ogpImageUrl`を追加。マイグレーションで`ogp_image_url`列（NOT NULL、デフォルト`''`）を追加。APIの一覧クエリにも列を反映。 |
+| `src/server/ogp.ts`, `src/server/storage.ts`, `test/ogp.test.ts` | `extractOgImageUrl` / `fetchWithTimeout` / `storeOgpImage`を追加。og:image抽出、MIME・サイズ検証、ローカルファイル保存を行い、配信パスか空文字を返す。テストも追加。 |
+| `src/server/app.ts`, `test/worker.test.ts` | POST/PUTで`storeOgpImage`を呼び出し、`GET /ogp/:name`で保存済み画像を配信。テストも追加。 |
 | `src/client/App.tsx`, `src/client/styles.css`, `test/App.test.tsx` | `ogpImageUrl`があるときだけ遅延読み込みのサムネイルを表示。CSSと表示有無のテストを追加。 |
 | `.gitignore` | `.tmp`を除外対象に追加。 |
 
@@ -69,31 +69,31 @@ PRを作成した直後、またはPRに新しいCommitをPushした直後に、
 ```mermaid
 sequenceDiagram
   participant Client
-  participant Worker
+  participant API
   participant OGPService
   participant PageServer
-  participant R2
+  participant Storage
 
-  Client->>Worker: POST /api/bookmarks (url)
-  Worker->>OGPService: storeOgpImage(url)
+  Client->>API: POST /api/bookmarks (url)
+  API->>OGPService: storeOgpImage(url)
   OGPService->>PageServer: fetch(page URL)
   PageServer-->>OGPService: HTML
   OGPService->>OGPService: extractOgImageUrl
   OGPService->>PageServer: fetch(og:image URL)
   PageServer-->>OGPService: image bytes
-  OGPService->>R2: put(ogp/<uuid>.<ext>, bytes, contentType)
-  R2-->>OGPService: stored
-  OGPService-->>Worker: /ogp/<uuid>.<ext>
-  Worker->>Worker: INSERT/UPDATE bookmark with ogp_image_url
-  Worker-->>Client: {id, url, ogpImageUrl: "/ogp/<uuid>.<ext>"}
+  OGPService->>Storage: writeFile(<uuid>.<ext>, bytes)
+  Storage-->>OGPService: stored
+  OGPService-->>API: /ogp/<uuid>.<ext>
+  API->>API: INSERT/UPDATE bookmark with ogp_image_url
+  API-->>Client: {id, url, ogpImageUrl: "/ogp/<uuid>.<ext>"}
 
-  Client->>Worker: GET /ogp/<uuid>.<ext>
-  Worker->>R2: get(ogp/<uuid>.<ext>)
-  R2-->>Worker: body + metadata
-  Worker-->>Client: image bytes (content-type, etag, cache-control: immutable)
+  Client->>API: GET /ogp/<uuid>.<ext>
+  API->>Storage: readFile(<uuid>.<ext>)
+  Storage-->>API: body + metadata
+  API-->>Client: image bytes (content-type, etag, cache-control: immutable)
 ```
 
-「URL登録 → ページ取得 → og:image抽出 → R2に保存 → 一覧表示」という流れが、コードを読まなくても追えます。
+「URL登録 → ページ取得 → og:image抽出 → ローカルに保存 → 一覧表示」という流れが、コードを読まなくても追えます。
 
 ### Estimated code review effort
 
