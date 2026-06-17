@@ -29,3 +29,7 @@ reviews:
         - docusaurus.config.ts / sidebars.ts の設定ミスやリンク切れ参照を確認する。
         - React コンポーネントの hooks 規則違反や不要な再レンダリングを指摘する。
         - alt 属性・aria ラベル・キーボード操作など WCAG 2.1 AA の観点を確認する。
+knowledge_base:
+  linked_repositories:
+    - repository: goofmint/bookmark-demo
+      instructions: ドキュメント内で参照しているデモアプリ
