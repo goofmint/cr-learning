@@ -50,7 +50,7 @@ const sidebars: SidebarsConfig = {
           collapsed: false,
           items: [
             'vscode-extension-setup',
-            'implement-tag-filter',
+            'auth-implementation',
             'experience-ide-review',
           ],
         },
