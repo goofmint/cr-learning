@@ -21,8 +21,8 @@ title: 開発環境を準備する
 | --- | --- |
 | [手順1](#step-1) | Git をインストールする |
 | [手順2](#step-2) | GitHub のアカウントを作る |
-| [手順3](#step-3) | デモアプリのリポジトリを Fork（自分用にコピー）する |
-| [手順4](#step-4) | Fork したリポジトリを自分のパソコンに持ってくる（clone） |
+| [手順3](#step-3) | PRレビューを体験する場合は、デモアプリのリポジトリを Fork（自分用にコピー）する |
+| [手順4](#step-4) | デモアプリのリポジトリを自分のパソコンに持ってくる（clone） |
 | [手順5](#step-5) | Node.js をインストールして、必要な部品をそろえる |
 | [手順6](#step-6) | アプリをローカルで起動して動作確認する |
 
@@ -95,6 +95,12 @@ git config --global user.email "you@example.com"
 
 - [https://github.com/goofmint/bookmark-demo](https://github.com/goofmint/bookmark-demo)
 
+:::note[Forkが必要なのはPRレビューの場合です]
+Forkは、GitHub上で自分のリポジトリにBranchをpushし、PRを作ってCodeRabbitのPRレビューを受けるために必要です。
+
+IDEレビューやCLIレビューだけを体験する場合は、Forkせずに元のリポジトリをcloneしてローカルで変更しても進められます。あとでPRレビューを体験する予定がある場合は、この時点でForkしておくと、そのまま同じ作業ディレクトリを使えます。
+:::
+
 このリポジトリを直接変更することはできないので、**自分のアカウントにコピー（Fork）** して使います。
 
 1. ログインした状態で [https://github.com/goofmint/bookmark-demo](https://github.com/goofmint/bookmark-demo) を開きます
@@ -106,12 +112,18 @@ git config --global user.email "you@example.com"
 
 ## 4. 自分のパソコンに clone する \{#step-4}
 
-Fork したリポジトリを、自分のパソコンにダウンロードします。
+リポジトリを、自分のパソコンにダウンロードします。
 
-次のコマンドの `あなたのユーザー名` の部分を、自分のGitHubユーザー名に置き換えて実行してください。
+PRレビューを体験する場合は、Forkしたリポジトリをcloneします。次のコマンドの `あなたのユーザー名` の部分を、自分のGitHubユーザー名に置き換えて実行してください。
 
 ```bash
 git clone https://github.com/あなたのユーザー名/bookmark-demo.git
+```
+
+IDEレビューやCLIレビューだけを体験する場合は、元のリポジトリを直接cloneしても構いません。
+
+```bash
+git clone https://github.com/goofmint/bookmark-demo.git
 ```
 
 ダウンロードが終わったら、できたフォルダの中に移動します。
@@ -187,7 +199,7 @@ npm test
 これで次の準備が整いました。
 
 - Git と GitHub アカウント
-- 自分用に Fork した `bookmark-demo` リポジトリ
+- ローカルにcloneした `bookmark-demo` リポジトリ
 - ローカルで動くデモアプリ
 - ローカルに自動作成されるSQLiteデータベースとOGP画像保存フォルダ
 

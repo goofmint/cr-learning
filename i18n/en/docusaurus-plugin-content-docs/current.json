@@ -23,6 +23,10 @@
     "message": "IDE Review",
     "description": "The label for category IDEレビュー in sidebar tutorialSidebar"
   },
+  "sidebar.tutorialSidebar.category.CLIレビュー": {
+    "message": "CLI Review",
+    "description": "The label for category CLIレビュー in sidebar tutorialSidebar"
+  },
   "sidebar.tutorialSidebar.category.振り返り編": {
     "message": "Reflection",
     "description": "The label for category 振り返り編 in sidebar tutorialSidebar"
