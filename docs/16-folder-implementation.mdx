@@ -78,15 +78,17 @@ git checkout -b feature/bookmark-folders
 
 AIコーディングツールを、この`bookmark-demo`フォルダで開きます。
 
-:::note[AIに前提を伝えるコツ]
-プロンプトの最初に「どんなアプリか」を一言添えると、AIの精度が上がります。次の一文を、各プロンプトの前に付けて使うとよいです。
+:::note[修正版サンプルを使う場合]
+この章のフォルダ分け機能に対応した修正版サンプルは、次のZIPファイルとして用意しています。
 
-> これは Node.js + Hono + React + SQLite で動くローカル用のブックマークアプリです。既存のコードのスタイル、型定義、テストの書き方に合わせてください。今回はブックマークを1階層のフォルダで分類できるようにします。
+https://github.com/goofmint/bookmark-demo/releases/download/folder/folder.zip
+
+このZIPファイルに含まれる`src/test/migrations`を、手元のプロジェクトの`src/test/migrations`と入れ替えて進めてもOKです。
 :::
 
 ## サンプルプロンプト \{#prompts}
 
-ここからは、ステップごとのサンプルプロンプトです。各ステップのあとに`git diff`で変更を確認してください。
+ここからは、ステップごとのサンプルプロンプトです。
 
 ### ステップ1：データベースとAPIを実装する
 
