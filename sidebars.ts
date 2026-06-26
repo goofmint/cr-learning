@@ -54,6 +54,16 @@ const sidebars: SidebarsConfig = {
             'experience-ide-review',
           ],
         },
+        {
+          type: 'category',
+          label: 'CLIレビュー',
+          collapsed: false,
+          items: [
+            'cli-installation',
+            'folder-implementation',
+            'experience-cli-review',
+          ],
+        },
       ],
     },
     {

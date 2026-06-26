@@ -1,0 +1,145 @@
+---
+sidebar_position: 15
+title: CLIをインストールする
+---
+
+# CLIをインストールする
+
+## この章の目的
+
+CodeRabbit CLIをインストールし、AIコーディングエージェントから手元のGitリポジトリに対してレビューを実行できる状態にします。
+
+この章では、CLIを入れてログインし、次の章で作る変更をレビューできる準備をします。
+
+## CLIレビューでできること
+
+CLIレビューは、PRを作る前のセルフチェックとして使えます。CodexやClaude CodeなどのAIコーディングエージェントからCodeRabbit CLIを呼び出し、手元の変更に対してレビューを受けます。
+
+- 未コミットの変更をAIコーディングエージェントからレビューできる
+- Gitの差分をもとに、問題のありそうな箇所や修正案を確認できる
+- `cr doctor` で、インストール、ログイン、Gitリポジトリ、通信状態を確認できる
+
+Codex CLI、Claude Codeなどのターミナル中心のAIコーディング環境を使っているときに便利です。
+
+:::warning[完全なオフラインでは動きません]
+CLIレビューも、レビュー処理のためにCodeRabbitのサービスへ接続します。手元の未コミットな変更もレビューできますが、完全なオフライン環境では動作しません。社外に出せないコードを扱う場合は、組織のルールに従ってください。
+:::
+
+## 前提
+
+- [開発環境を準備する](environment-setup) の手順が終わっていること
+- `bookmark-demo` がローカルにclone済みであること
+- ターミナルで `git` と `node` が使えること
+- CodeRabbitのアカウントでログインできること
+- CLIレビューに使うAIコーディングエージェントが使えること
+
+## 1. CLIをインストールする
+
+公式ドキュメントでは、インストールスクリプトを使う方法が案内されています。
+
+```bash
+curl -fsSL https://cli.coderabbit.ai/install.sh | sh
+```
+
+インストール後、ターミナルを開き直すか、シェル設定を読み込み直します。zshを使っている場合は、次のようにします。
+
+```bash
+source ~/.zshrc
+```
+
+`coderabbit` コマンドと `cr` コマンドは同じCLIを指します。この教材では短い `cr` を使います。
+
+## 2. インストールを確認する
+
+次のコマンドで、CLIが使えるか確認します。
+
+```bash
+cr --version
+```
+
+バージョンが表示されれば、CLIはインストールできています。CLI自体が見つからない場合は、ターミナルを開き直すか、インストール先がPATHに含まれているか確認してください。
+
+## 3. CodeRabbitにログインする
+
+CLIからCodeRabbitアカウントにログインします。
+
+```bash
+cr auth login
+```
+
+ブラウザが開くので、CodeRabbitにサインインします。
+
+ログインできたら、状態を確認します。
+
+```bash
+cr auth status
+```
+
+## 4. AIコーディングエージェント側をセットアップする
+
+CLIレビューは、AIコーディングエージェントから呼び出す前提で使います。使っているエージェントに合わせて、次のどれかを設定します。
+
+| 使うエージェント | セットアップ |
+| --- | --- |
+| Codex | CodeRabbitプラグインをインストールする |
+| Claude Code | CodeRabbitプラグインをインストールする |
+| その他のSkills対応エージェント | CodeRabbit Skillsをインストールする |
+
+### Codexの場合
+
+Codexでは、CodeRabbitプラグインを使います。
+
+Codex CLIの場合は、Codexの中でプラグイン一覧を開きます。
+
+```text
+/plugins
+```
+
+`coderabbit` を検索し、CodeRabbitプラグインをインストールします。インストール後にCodexを再起動すると、プラグイン一覧が更新されます。
+
+詳しい手順は、公式ドキュメントの [Codex integration](https://docs.coderabbit.ai/cli/codex-integration) を確認してください。
+
+### Claude Codeの場合
+
+Claude Codeでは、CodeRabbitプラグインをインストールします。
+
+```text
+/plugin install coderabbit
+```
+
+詳しい手順は、公式ドキュメントの [Claude Code integration](https://docs.coderabbit.ai/cli/claude-code-integration) を確認してください。
+
+### その他のエージェントの場合
+
+CodexやClaude Code以外のSkills対応エージェントでは、CodeRabbit Skillsを使います。
+
+```bash
+npx skills add coderabbitai/skills
+```
+
+Skillsは、エージェントが `SKILL.md` を読み、必要に応じてCodeRabbit CLIを呼び出す仕組みです。詳しい手順は、公式ドキュメントの [CodeRabbit Skills](https://docs.coderabbit.ai/cli/skills) を確認してください。
+
+## 5. レビュー対象のリポジトリで確認する
+
+`bookmark-demo` フォルダへ移動し、診断を実行します。
+
+```bash
+cd bookmark-demo
+cr doctor
+```
+
+CLIレビューはGitリポジトリの中で実行します。
+
+この章では、CLIが起動できることまで確認できれば十分です。次の章でフォルダ分け機能を実装し、その差分に対してCLIレビューを実行します。
+
+## ここまでのまとめ
+
+この章では、CodeRabbit CLIをインストールし、ログインと診断まで確認しました。
+
+- CodeRabbit CLIをインストールした
+- `cr auth login` でログインした
+- Codex/Claude CodeではCodeRabbitプラグイン、それ以外ではSkillsをセットアップした
+- `cr doctor` でローカル環境を確認した
+- CLIレビューはGitリポジトリ内の変更に対して実行することを確認した
+
+次の章では、CLIレビューの題材として、Bookmark Demoにフォルダ分け機能を実装します。
