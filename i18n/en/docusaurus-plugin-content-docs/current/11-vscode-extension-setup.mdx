@@ -1,0 +1,104 @@
+---
+sidebar_position: 12
+title: Set Up the VS Code Extension
+---
+
+# Set Up the VS Code Extension
+
+## Goal
+
+CodeRabbit provides an **extension (IDE extension)** that runs inside VS Code. Once you install it, you can get reviews of **the code you write locally**, before you open a PR.
+
+In this chapter, you install that VS Code extension, log in, and get to a state where you can receive reviews.
+
+## What You Can Do with an IDE Review
+
+Whereas a PR review is "a review you receive on GitHub after creating a PR," an IDE review lets you receive feedback **while you are still writing code**, right inside the editor.
+
+The official description says you can roughly do the following.
+
+- Get reviews of uncommitted or committed changes
+- See fix suggestions and concerns displayed line by line
+- Fix simple findings with **a single click**
+- Hand complex findings to an **AI agent** (Claude Code, Cursor, GitHub Copilot, and so on) and have it make the fix
+
+You can use IDE reviews even on the free plan. However, there is a cap (rate limit) on how many times per day you can run one.
+
+:::warning[It Does Not Work Fully Offline]
+This extension **does not work fully locally (offline)**. It can review your local uncommitted files, but the actual review processing is done by **uploading the code to the cloud**. An internet connection is required, so if you handle code that cannot leave your company, keep this point in mind (if you want to run it on an in-house server, consider the self-hosted version that uses the Self Hosted Url described later).
+:::
+
+## Supported Editors
+
+The three editors the official docs list as supported are the following.
+
+- **VS Code**
+- **Cursor**
+- **Windsurf**
+
+Cursor and Windsurf are editors based on VS Code, so basically the same extension runs as is. This chapter proceeds using VS Code as the example.
+
+## Prerequisites
+
+- VS Code is installed
+- You can create a CodeRabbit account (you can create one with just an email address)
+
+If you added CodeRabbit to your repository in the [Set Up CodeRabbit](coderabbit-setup) chapter, you can log in with the same account. If you have not created one yet, you can create it partway through this chapter.
+
+## 1. Install the Extension
+
+Open VS Code and click the **Extensions** icon in the sidebar on the left.
+
+Type `coderabbit` into the search box, and an extension named **"CodeRabbit"** (publisher: **CodeRabbit Inc.**) appears. Select it and press the **"Install"** button.
+
+If you want to install it directly from the browser, you can also do so from the following links.
+
+- [Visual Studio Marketplace: CodeRabbit](https://marketplace.visualstudio.com/items?itemName=CodeRabbit.coderabbit-vscode)
+- Short link: [https://coderabbit.link/vscode](https://coderabbit.link/vscode)
+
+Open the link and press "Install," and VS Code launches and switches to the extension's install screen.
+
+## 2. Log In
+
+Once the installation completes, a **dialog with a "Login" button** appears automatically. Press it to proceed to logging in.
+
+If you happened to close the dialog, a **CodeRabbit icon** has been added to the activity bar on the left side of VS Code (the tall vertical bar at the far left). Click it, and from the panel that appears, select **"Use CodeRabbit for Free."**
+
+When you perform the login action,
+
+1. The browser launches and opens CodeRabbit's login screen
+2. You sign in with your account (if you do not have an account, you can create one here)
+3. Once authentication finishes, you are automatically returned to VS Code
+
+If the automatic transition from the browser back to VS Code does not work, copy the **success code** shown on the screen and paste it into the input field in VS Code.
+
+Once you log in successfully, the CodeRabbit sidebar is ready to use.
+
+## 3. Open the CodeRabbit Sidebar
+
+Click the **CodeRabbit icon** in the activity bar, and a panel dedicated to CodeRabbit opens on the left side of the screen. From here you run reviews and check findings.
+
+The specific steps for running a review are covered in the next chapter, "[Experience an IDE Review](experience-ide-review)."
+
+## Settings
+
+The CodeRabbit extension provides the following settings. You can leave them as they are for now. Adjust them as needed when you actually experience an IDE review.
+
+| Setting | Description |
+| --- | --- |
+| Agent Type | Selects the AI agent used when you fix a finding with "Fix with AI." You can specify any of `Native` (default), `Claude Code`, `Claude Code Extension`, `Codex CLI`, `Clipboard`, `Cline`, `Roo`, `Kilo Code`, `Augment Code`, or `opencode`. |
+| Auto Review Mode | Decides whether a review starts automatically when you commit. The default is `prompt` (ask whether to start on every commit). You can also choose `auto` (start automatically every time) or `disable` (do not start automatically). |
+| Auto Start Task | A checkbox for whether to start "Fix with AI" automatically. |
+| Region | The region (the area where processing is performed) to use. The default is `US`. You can also choose `EU`. |
+| Self Hosted Url | Set the URL here if you use the self-hosted version (CodeRabbit running on your own servers). If you use the normal cloud version, leaving it empty is fine. |
+
+### What Is Fix with AI
+
+The **"Fix with AI"** that appears under `Agent Type` above is a feature that hands a CodeRabbit finding to an AI agent and has it make the fix. Beyond small fixes you can apply with a single click, you can delegate complex fixes to an agent such as Claude Code. If you select `Clipboard`, you can copy the instruction to the clipboard and hand it over manually even without a compatible agent.
+
+## What You Now Have
+
+- The CodeRabbit extension is installed in VS Code and you can open its sidebar
+- You are logged in with your CodeRabbit account
+
+In the next chapter, as material for experiencing an IDE review, you first implement an **authentication feature** locally. You will then receive reviews of that change from this extension.

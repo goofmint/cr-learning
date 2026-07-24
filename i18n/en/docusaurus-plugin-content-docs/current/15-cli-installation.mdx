@@ -1,0 +1,145 @@
+---
+sidebar_position: 15
+title: Install the CLI
+---
+
+# Install the CLI
+
+## Goal
+
+Install the CodeRabbit CLI and get it to a state where you can run reviews against your local Git repository from an AI coding agent.
+
+In this chapter, you will install the CLI, log in, and get ready to review the changes you will make in the next chapter.
+
+## What You Can Do with CLI Review
+
+CLI review can be used as a self-check before you create a PR. You call the CodeRabbit CLI from an AI coding agent such as Codex or Claude Code, and receive a review of your local changes.
+
+- Review uncommitted changes from an AI coding agent
+- Based on the Git diff, check for spots that look problematic along with suggested fixes
+- Use `cr doctor` to check the installation, login, Git repository, and connection status
+
+It is handy when you use a terminal-centric AI coding environment such as Codex CLI or Claude Code.
+
+:::warning[It Does Not Work Fully Offline]
+CLI review also connects to the CodeRabbit service to perform the review. You can review your local uncommitted changes, but it does not work in a fully offline environment. If you handle code that cannot leave your organization, follow your organization's rules.
+:::
+
+## Prerequisites
+
+- You have finished the steps in [Prepare the Development Environment](environment-setup)
+- `bookmark-demo` is cloned locally
+- You can use `git` and `node` in your terminal
+- You can log in with a CodeRabbit account
+- You can use the AI coding agent you will use for CLI review
+
+## 1. Install the CLI
+
+The official documentation describes a method that uses an installation script.
+
+```bash
+curl -fsSL https://cli.coderabbit.ai/install.sh | sh
+```
+
+After installing, reopen your terminal or reload your shell configuration. If you use zsh, do the following.
+
+```bash
+source ~/.zshrc
+```
+
+The `coderabbit` command and the `cr` command refer to the same CLI. In this material, we use the shorter `cr`.
+
+## 2. Verify the Installation
+
+Check whether the CLI is available with the following command.
+
+```bash
+cr --version
+```
+
+If a version is shown, the CLI is installed. If the CLI itself is not found, reopen your terminal, or check that the install location is included in your PATH.
+
+## 3. Log In to CodeRabbit
+
+Log in to your CodeRabbit account from the CLI.
+
+```bash
+cr auth login
+```
+
+A browser opens, so sign in to CodeRabbit.
+
+Once you are logged in, check the status.
+
+```bash
+cr auth status
+```
+
+## 4. Set Up the AI Coding Agent Side
+
+CLI review is used on the assumption that you call it from an AI coding agent. Depending on the agent you use, configure one of the following.
+
+| Agent you use | Setup |
+| --- | --- |
+| Codex | Install the CodeRabbit plugin |
+| Claude Code | Install the CodeRabbit plugin |
+| Other Skills-capable agents | Install CodeRabbit Skills |
+
+### For Codex
+
+With Codex, you use the CodeRabbit plugin.
+
+For Codex CLI, open the plugin list inside Codex.
+
+```text
+/plugins
+```
+
+Search for `coderabbit` and install the CodeRabbit plugin. If you restart Codex after installing, the plugin list is updated.
+
+For detailed steps, see [Codex integration](https://docs.coderabbit.ai/cli/codex-integration) in the official documentation.
+
+### For Claude Code
+
+With Claude Code, install the CodeRabbit plugin.
+
+```text
+/plugin install coderabbit
+```
+
+For detailed steps, see [Claude Code integration](https://docs.coderabbit.ai/cli/claude-code-integration) in the official documentation.
+
+### For Other Agents
+
+For Skills-capable agents other than Codex or Claude Code, you use CodeRabbit Skills.
+
+```bash
+npx skills add coderabbitai/skills
+```
+
+Skills is a mechanism where the agent reads `SKILL.md` and calls the CodeRabbit CLI as needed. For detailed steps, see [CodeRabbit Skills](https://docs.coderabbit.ai/cli/skills) in the official documentation.
+
+## 5. Verify in the Repository You Will Review
+
+Move to the `bookmark-demo` folder and run the diagnostics.
+
+```bash
+cd bookmark-demo
+cr doctor
+```
+
+CLI review runs inside a Git repository.
+
+In this chapter, it is enough to confirm that the CLI can start. In the next chapter, you will implement the folder organization feature and run CLI review against that diff.
+
+## Summary So Far
+
+In this chapter, you installed the CodeRabbit CLI and verified login and diagnostics.
+
+- Installed the CodeRabbit CLI
+- Logged in with `cr auth login`
+- Set up the CodeRabbit plugin for Codex/Claude Code, and Skills for the others
+- Checked your local environment with `cr doctor`
+- Confirmed that CLI review runs against changes inside a Git repository
+
+In the next chapter, as a subject for CLI review, you will implement a folder organization feature in Bookmark Demo.

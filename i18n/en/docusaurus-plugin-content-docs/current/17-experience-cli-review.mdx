@@ -1,0 +1,94 @@
+---
+sidebar_position: 17
+title: Experience a CLI Review
+---
+
+# Experience a CLI Review
+
+## Goal
+
+Using the CodeRabbit plugin or Skills you set up in [Install the CLI](cli-installation), you will experience the flow of receiving a review from an AI coding agent.
+
+In the previous chapter, you added folder organization to Bookmark Demo. In this chapter, you will use that change as the material to see what kind of findings the CodeRabbit CLI produces, how to read them, and how to respond to them.
+
+## Start a CLI Review
+
+First, make sure you are in the `bookmark-demo` folder.
+
+```bash
+pwd
+git status
+```
+
+Next, check the state of the CLI.
+
+```bash
+cr doctor
+```
+
+If there are no problems, run the review.
+
+Ask your AI coding agent as follows.
+
+```prompt
+Please review the current changes with CodeRabbit.
+Check whether each finding is valid for the current code, and fix the ones that are valid.
+
+After fixing, show the following list:
+- CodeRabbit's findings
+- The judgement of whether each is valid
+- What you fixed, or the reason you did not fix it
+```
+
+With the CodeRabbit plugin for Codex or CodeRabbit Skills, the agent calls the CodeRabbit CLI based on your natural-language request. A review can take some time. When it finishes, the agent checks CodeRabbit's findings and fixes the valid ones.
+
+## Check the Review Results and the Fixes
+
+CodeRabbit's review results include the file name, the relevant location, the finding, and a suggested fix.
+
+Once the agent has finished its work, check the following for each finding.
+
+- The finding
+- The judgement of whether it is valid
+- What was fixed, or the reason it was not fixed
+
+For example, the result looks like this.
+
+````text
+Both npm run build and npm test succeeded. All 37 tests passed.
+CodeRabbit review results: 9 findings
+
+| # | CodeRabbit's finding | Severity | Validity judgement | Response |
+| --- | --- | --- | --- | --- |
+| 1 | Add a zod schema to `CreateFolderRequest` / `UpdateFolderRequest` | major | Not valid. The existing code does not use zod, and input validation is already implemented in line with the server side's existing handling | No fix |
+| 2 | The migration has no down process | minor | Not valid. The existing migrations are forward-apply only, and past files have no down process either | No fix |
+| 3 | The folder operation buttons have no `:focus` styling | critical | Not valid. `outline: none` is not specified, so the browser's default focus display remains | No fix |
+| 4 | Add a CHECK constraint to prevent an empty folder name | minor | Valid. The app side checks it too, but it is effective as a defense on the DB side | Added `CHECK (length(trim(name)) > 0)` |
+| 5 | The test does not `await` the bookmark creation process | critical | Not valid. The target DB API is synchronous, and the existing tests are written the same way | No fix |
+````
+
+In this example, out of the 9 findings the only one actually fixed was the DB CHECK constraint. The rest were judged not valid in light of the existing code's approach and the implementation facts, and were not fixed.
+
+CodeRabbit's findings are not the final word. Read the code around the flagged location and judge, in light of this feature's specification, whether it really should be fixed.
+
+## Redisplay the Most Recent Results
+
+If you want to read the review results again, you can redisplay the most recent results.
+
+```bash
+cr review findings
+```
+
+This is useful when the terminal output has scrolled away during your fixes, or when you want the AI agent to re-check the previous results.
+
+## Summary So Far
+
+In this chapter, you experienced the flow of calling a CodeRabbit CLI review from an AI coding agent.
+
+- Checked the state of the CLI with `cr doctor`
+- Ran a review from the CodeRabbit plugin or Skills
+- Read the findings on the folder organization feature and judged their importance
+- Responded to the necessary findings and verified with `npm run build` and `npm test`
+- Confirmed the flow of calling a CLI review from an AI coding agent
+
+A CLI review works as a self-check before committing. It makes it easier to build the habit of checking changes while they are still small and responding only to the fixes you actually need.

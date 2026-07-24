@@ -1,0 +1,34 @@
+---
+sidebar_position: 8
+title: Set Up CodeRabbit
+---
+
+# Set Up CodeRabbit
+
+## Goal
+
+To experience the PR reviews coming up, you will enable **CodeRabbit** on the repository you forked. Here we set it up using the free, open-source method (the OSS version).
+
+This assumes you have finished "Prepare the Development Environment" and that `bookmark-demo` is running locally.
+
+## Enable the OSS Version
+
+1. While logged in to GitHub, open the [CodeRabbit GitHub Marketplace page](https://github.com/marketplace/coderabbitai)
+2. Click the **"Add"** button on the page
+3. From the plan options, choose **"Open Source"**
+4. As the installation target, select your own account where you forked `bookmark-demo`
+5. Check **"Allow my billing information to be linked with this organization"**
+6. When selecting the target repository, choose `bookmark-demo` ("All repositories" is fine too; you can change this later)
+7. When the installation completes, you are taken to the CodeRabbit dashboard, where your repository is shown
+
+Now, whenever you open a pull request (PR) in this repository of yours, CodeRabbit will review it automatically.
+
+:::note[Note]
+The OSS setup steps are also described in detail, with screenshots, in the article "[Introducing CodeRabbit for Free for Open Source](https://qiita.com/goofmint/items/e4ab57e6bf4d8f98ea5c)." Refer to it if the screens have changed and things are hard to follow.
+:::
+
+## What You Now Have
+
+- CodeRabbit running on your own `bookmark-demo` repository
+
+In the next chapter, you will implement the OGP fetching feature in this application, turn that change into a pull request, and receive a review from CodeRabbit.

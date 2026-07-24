@@ -21,8 +21,8 @@ You will prepare things in the following order. If you go from top to bottom, yo
 | --- | --- |
 | [Step 1](#step-1) | Install Git |
 | [Step 2](#step-2) | Create a GitHub account |
-| [Step 3](#step-3) | Fork the demo application's repository (make your own copy) |
-| [Step 4](#step-4) | Bring the forked repository to your computer (clone) |
+| [Step 3](#step-3) | If you want to experience a PR review, fork the demo application's repository (make your own copy) |
+| [Step 4](#step-4) | Bring the demo application's repository to your computer (clone) |
 | [Step 5](#step-5) | Install Node.js and get the required parts |
 | [Step 6](#step-6) | Start the application locally and verify it works |
 
@@ -95,6 +95,14 @@ The repository that serves as the base for this hands-on is the following.
 
 - [https://github.com/goofmint/bookmark-demo](https://github.com/goofmint/bookmark-demo)
 
+:::note[Fork Is Only Needed for PR Reviews]
+A fork is needed so you can push a branch to your own repository on GitHub, open a PR, and receive a CodeRabbit PR review.
+
+If you only want to experience an IDE review or a CLI review, you can proceed by cloning the original repository without forking and making changes locally. If you plan to try a PR review later, forking now lets you keep using the same working directory.
+
+If you are not going to do a PR review, proceed to [Step 4](#step-4).
+:::
+
 Because you cannot change this repository directly, you make **a copy under your own account (Fork)** and use that.
 
 1. While logged in, open [https://github.com/goofmint/bookmark-demo](https://github.com/goofmint/bookmark-demo)
@@ -106,12 +114,18 @@ After a short wait, your own copy at `https://github.com/your-username/bookmark-
 
 ## 4. Clone to Your Computer \{#step-4}
 
-Download the forked repository to your own computer.
+Download the repository to your own computer.
 
-In the following command, replace the `your-username` part with your own GitHub username, then run it.
+If you want to experience a PR review, clone the repository you forked. In the following command, replace the `your-username` part with your own GitHub username, then run it.
 
 ```bash
 git clone https://github.com/your-username/bookmark-demo.git
+```
+
+If you only want to experience an IDE review or a CLI review, you can clone the original repository directly.
+
+```bash
+git clone https://github.com/goofmint/bookmark-demo.git
 ```
 
 When the download finishes, move into the folder that was created.
@@ -187,7 +201,7 @@ If all the tests pass, it is a sign that the environment is set up correctly.
 You have now prepared the following.
 
 - Git and a GitHub account
-- The `bookmark-demo` repository forked for yourself
+- The `bookmark-demo` repository cloned locally
 - The demo application running locally
 - The SQLite database and OGP image storage folder that are created automatically locally
 
