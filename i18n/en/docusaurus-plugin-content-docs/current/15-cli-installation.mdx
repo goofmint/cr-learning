@@ -22,7 +22,7 @@ CLI review can be used as a self-check before you create a PR. You call the Code
 It is handy when you use a terminal-centric AI coding environment such as Codex CLI or Claude Code.
 
 :::warning[It Does Not Work Fully Offline]
-CLI review also connects to the CodeRabbit service to perform the review. You can review your local uncommitted changes, but it does not work in a fully offline environment. If you handle code that cannot leave your organization, follow your organization's rules.
+CLI review connects to the CodeRabbit service to perform the review. You can review your local uncommitted changes, but it does not work in a fully offline environment. If you handle code that cannot leave your organization, follow your organization's rules.
 :::
 
 ## Prerequisites
@@ -77,13 +77,7 @@ cr auth status
 
 ## 4. Set Up the AI Coding Agent Side
 
-CLI review is used on the assumption that you call it from an AI coding agent. Depending on the agent you use, configure one of the following.
-
-| Agent you use | Setup |
-| --- | --- |
-| Codex | Install the CodeRabbit plugin |
-| Claude Code | Install the CodeRabbit plugin |
-| Other Skills-capable agents | Install CodeRabbit Skills |
+CLI review is used on the assumption that you call it from an AI coding agent. See the instructions below for the agent you use.
 
 ### For Codex
 
