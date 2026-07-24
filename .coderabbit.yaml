@@ -3,7 +3,7 @@ reviews:
   post_merge_actions:
     - enabled: true
       name: Slack通知
-      prompt: マージが完了したら、Slackのall-goofmintチャンネルにPRの概要と、PRのオープンからマージ完了までの時間を報告してください。
+      prompt: マージが完了したら、Notionの更新履歴ページPRの概要と、PRのオープンからマージ完了までの時間を記述してください。日付ごとにグルーピングしてください。
   path_filters:
     - "!build/**"
     - "!.docusaurus/**"

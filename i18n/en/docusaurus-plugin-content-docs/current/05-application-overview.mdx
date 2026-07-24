@@ -60,12 +60,11 @@ flowchart LR
   C -->|fetch| A[Hono API on Node.js]
   A -->|Save / Search| D[(SQLite)]
   A -->|Fetch HTML| W[External web page]
-  A -->|Save OGP image| R[(data/ogp/)]
 ```
 
 When displaying the bookmark list, the React screen calls `/api/bookmarks`. The API reads the bookmarks from SQLite and returns them as JSON.
 
-When adding a bookmark, the React screen sends the URL to the API. The API normalizes the URL, fetches the `<title>` of the linked page, and saves it to SQLite. If it finds an OGP image, it stores the image file locally under `data/ogp/`.
+When adding a bookmark, the React screen sends the URL to the API. The API normalizes the URL, fetches the `<title>` of the linked page, and saves it to SQLite.
 
 ## Why Use This Subject
 

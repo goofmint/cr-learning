@@ -12,14 +12,14 @@ Add a feature to Bookmark Demo that displays the OGP image as a thumbnail.
 The goal of this chapter is to display the linked pages' OGP images as thumbnails in the bookmark list.
 
 :::note[How to work through this chapter]
-In this hands-on exercise you implement the feature using an AI coding tool (Claude Code, Cursor, GitHub Copilot, or any other — it does not matter which). This chapter provides **sample prompts** you can paste in as-is.
+In this hands-on exercise you implement the feature using an AI coding tool (Claude Code, Cursor, GitHub Copilot, or any other — it does not matter which). This chapter provides sample prompts you can paste in as-is.
 
-In case the AI cannot implement it well, the end of the chapter also provides [a way to download the finished version and swap it in](#fallback). If you get stuck, feel free to use that.
+The end of the chapter provides [a way to download the finished version and swap it in](#fallback).
 :::
 
 ## What is OGP? \{#what-is-ogp}
 
-**OGP** (Open Graph Protocol) is a mechanism a web page uses to declare "when this page is shared on social media and the like, use this title, description, and image."
+OGP (Open Graph Protocol) is a mechanism a web page uses to declare "when this page is shared on social media and the like, use this title, description, and image."
 
 For example, when you paste a news article URL into X or Slack, a card with the article's image is shown. That is built by reading OGP information.
 
@@ -31,10 +31,10 @@ OGP is written inside the HTML `<head>` as `<meta>` tags like the following.
 <meta property="og:image" content="https://example.com/cover.png" />
 ```
 
-This time, of these, we fetch **`og:image` (the representative image of the page)** and display it as a thumbnail in the bookmark list.
+This time, of these, we fetch `og:image` (the representative image of the page) and display it as a thumbnail in the bookmark list.
 
 :::note[Why store the image instead of using it directly]
-If you point an `<img src>` directly at another site's image URL, the moment that site deletes or replaces the image, your display breaks too. To avoid this, this time we **copy the image to local storage (`data/ogp/`) once and then display it**. This folder is created automatically when the app starts.
+If you point an `<img src>` directly at another site's image URL, the moment that site deletes or replaces the image, your display breaks too. To avoid this, this time we copy the image to local storage (`data/ogp/`) once and then display it. This folder is created automatically when the app starts.
 :::
 
 ## Scope of This Implementation \{#scope}
@@ -51,9 +51,9 @@ This time we add the following five things.
 
 The feature policy is as follows. This becomes the "spec" you hand to the AI, so make sure you understand it well.
 
-- OGP image fetching is **best-effort**. Even for a page with no image or where fetching fails, saving the bookmark itself must always succeed.
-- When there is no image, set the OGP image path to an **empty string** and do not show a thumbnail in the list.
-- Only store **real image files (PNG/JPEG/WebP/GIF/AVIF)**. Do not store files that are too large.
+- OGP image fetching is best-effort. Even for a page with no image or where fetching fails, saving the bookmark itself must always succeed.
+- When there is no image, set the OGP image path to an empty string and do not show a thumbnail in the list.
+- Only store real image files (PNG/JPEG/WebP/GIF/AVIF). Do not store files that are too large.
 - Do not expose saved images directly. Serve them through the `/ogp/:name` API.
 
 ## The Overall Implementation \{#flow}
@@ -93,7 +93,7 @@ Adding a sentence about "what kind of app this is" at the start of the prompt im
 
 ## Sample Prompts \{#prompts}
 
-From here are the sample prompts per step. Run them **one at a time, in order**, and check the changes with `git diff` each time. Splitting it into steps rather than asking for everything at once makes the AI's implementation more stable and easier to review.
+From here are the sample prompts per step. Run them one at a time, in order, and check the changes with `git diff` each time. Splitting it into steps rather than asking for everything at once makes the AI's implementation more stable and easier to review.
 
 ### Step 1: Add a column to the database
 
@@ -133,7 +133,6 @@ Update src/server/ogp.ts and src/server/storage.ts as needed. Provide the follow
    - If anything fails, always return "" (so it does not block saving the bookmark)
 
 Do not use classes; write in the same function style as the existing code.
-Explain in comments why it returns "" and why image types are restricted.
 ```
 
 :::note[Why take `fetcher = fetch` as an argument]
@@ -205,17 +204,9 @@ npm test
 
 `npm run build` also doubles as a type check. If an error appears, paste the message as-is to the AI and tell it "fix this error," and it will fix it.
 
-## Tips for AI Coding \{#tips}
-
-- **Do not ask for everything at once.** Split into steps and check with `git diff` each time. The smaller the diff, the sooner you notice mistakes.
-- **Do not leave the spec vague.** Instead of "do it nicely," hand over decision criteria in words, such as "return an empty string on failure."
-- **Hand over errors in full.** Pasting the terminal error text as-is is the fastest way to get it fixed.
-- **Do not let it break what works.** Make explicit what you want protected, such as "do not change the behavior of the existing list API."
-- **Do not blindly trust the AI's implementation.** You will receive a CodeRabbit review afterward. Read the `git diff` yourself so you can explain it.
-
 ## When It Does Not Work: Swap In the Finished Version \{#fallback}
 
-When the AI's implementation just will not pass, you can fetch and swap in the finished code. **You can also use it as an answer key.**
+You can fetch and swap in the finished code.
 
 The finished version is on a Branch called `feat/ogp-image` in the demo repository.
 
@@ -229,15 +220,15 @@ Opening the following URL in your browser downloads the contents of the `feat/og
 https://github.com/goofmint/bookmark-demo/releases/download/ogp/ogp.zip
 ```
 
-When you unzip the downloaded file, a folder named `ogp` is created. This is the **complete finished code**. Keep it in a different location from your own `bookmark-demo` folder.
+When you unzip the downloaded file, a folder named `ogp` is created. This is the complete finished code. Keep it in a different location from your own `bookmark-demo` folder.
 
 :::note[Downloading from the GitHub screen]
-If the URL above is confusing, open the [repository page](https://github.com/goofmint/bookmark-demo), select OGP from the Releases on the right, and click the **"ogp.zip"** link under Assets to download it.
+If the URL above is confusing, open the [repository page](https://github.com/goofmint/bookmark-demo), select OGP from the Releases on the right, and click the "ogp.zip" link under Assets to download it.
 :::
 
 ### 2. Swap the Folders
 
-This time's changes all fit inside the following folders and files. Use these folders and files from the extracted folder to **replace wholesale** the same folders and files in your own `bookmark-demo` folder.
+This time's changes all fit inside the following folders and files. Use these folders and files from the extracted folder to replace the same folders and files in your own `bookmark-demo` folder.
 
 | Folders and files to replace | Contents |
 | --- | --- |

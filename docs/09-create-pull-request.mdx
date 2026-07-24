@@ -9,7 +9,7 @@ title: PRを作成する
 
 [OGP取得機能を実装する](ogp-implementation)で作った変更を、Commitし、GitHubへPushして、PR（Pull Request）にします。
 
-この章のゴールは**PRが作成できた状態**です。PRさえできれば、次の章でCodeRabbitのレビューを受けられます。
+この章のゴールはPRが作成できた状態です。PRさえできれば、次の章でCodeRabbitのレビューを受けられます。
 
 Branch・Commit・Push・PRが何をする操作かは[GitHub FlowとPR](github-flow-pr)で説明済みなので、ここでは繰り返しません。今回のOGP機能を、その流れに実際に乗せていきます。
 
@@ -125,7 +125,7 @@ baseとcompareを逆に選ぶと差分が空になったり、意図しない比
 
 ## よくあるつまずき
 
-**`git push`でエラーが出る**
+`git push`でエラーが出る
 
 初回Pushで`-u origin feature/ogp-image`を付けず、`git push`だけを実行すると、送り先が決まっておらずエラーになります。初回は`-u`付きで実行してください。
 
@@ -133,7 +133,7 @@ baseとcompareを逆に選ぶと差分が空になったり、意図しない比
 git push -u origin feature/ogp-image
 ```
 
-**新しく作ったファイルがCommitに入っていない**
+新しく作ったファイルがCommitに入っていない
 
 `git commit -am`は、すでにGitで管理されているファイルしか含めません。今回は`0003_add_ogp_image.sql`や`ogp.ts`など新規ファイルがあるため、これだと取りこぼします。新規ファイルは先に`git add`してからCommitします。Commit後は、次のコマンドでそのCommitに実際に含まれたファイル一覧を確認できます。
 
@@ -143,7 +143,7 @@ git show --name-only --oneline HEAD
 
 入れたかったファイルがすべて並んでいれば大丈夫です。
 
-**差分に関係ないファイルが混ざっている**
+差分に関係ないファイルが混ざっている
 
 `git status`や`git diff`に、今回の変更と関係ないファイル（ローカル用の生成物など）が出ていることがあります。Commitに含めたくないものは、`git add`する前に外しておきます。すでにステージングした場合は次のコマンドで外せます。
 
@@ -151,7 +151,7 @@ git show --name-only --oneline HEAD
 git restore --staged ファイル名
 ```
 
-**PRの差分が空、または見覚えのない差分になっている**
+PRの差分が空、または見覚えのない差分になっている
 
 base（取り込み先）とcompare（変更元）を逆に選んでいることがほとんどです。base=`main`、compare=`feature/ogp-image`になっているか確認してください。
 

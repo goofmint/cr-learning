@@ -27,13 +27,13 @@ CodeRabbit has the following main features.
 
 Review is the core CodeRabbit feature. You can learn more in [Pull Request Reviews](https://docs.coderabbit.ai/overview/pull-request-review). It can be used mainly in the following places.
 
-- **PR review**  
+- PR review
   When you create a PR on GitHub or another supported service, CodeRabbit checks the changes and posts summaries and review comments. If you push additional commits, it can review the newly changed parts again.
 
-- **[VS Code review](https://docs.coderabbit.ai/ide)**  
+- [VS Code review](https://docs.coderabbit.ai/ide)
   You can review changes in your editor before they are committed. This helps you find issues before opening a PR.
 
-- **[CLI review](https://docs.coderabbit.ai/cli)**  
+- [CLI review](https://docs.coderabbit.ai/cli)
   You can run CodeRabbit review from the terminal. This is useful before committing or when you want to include review in a CI workflow.
 
 In this course, we focus first on PR review. The goal is to experience what kinds of comments appear on a PR and how to read, judge, and respond to them.
@@ -72,13 +72,13 @@ CodeRabbit comments are not the final decision. The implementer and human review
 
 In CodeRabbit reviews, you mainly check the following information.
 
-- **Summary**  
+- Summary
   A short explanation of what changed in the PR. It helps reviewers understand the overall change.
 
-- **Review comments**  
+- Review comments
   Comments that point out concerns or things to check in the changed code. Do not accept every comment automatically. Read the reason and decide whether it applies.
 
-- **Suggested fixes**  
+- Suggested fixes
   Some comments include concrete examples of how to change the code. These are useful, but you still need to check whether they fit the project direction and existing code.
 
 For beginners, the important thing is not the number of comments. The important thing is to understand why a comment was made and decide whether the change is necessary.
@@ -113,22 +113,22 @@ CodeRabbit reviews not only changed code, but also surrounding information.
 
 For example, it can use the following kinds of information during review.
 
-- **[Path Instructions](https://docs.coderabbit.ai/configuration/path-instructions)**  
+- [Path Instructions](https://docs.coderabbit.ai/configuration/path-instructions)
   Change review perspectives for specific files or directories.
 
-- **[MCP servers](https://docs.coderabbit.ai/knowledge-base/mcp-context)**  
+- [MCP servers](https://docs.coderabbit.ai/knowledge-base/mcp-context)
   Refer to internal documents and organization-specific rules.
 
-- **[Issue integrations](https://docs.coderabbit.ai/integrations/issue-trackers)**  
+- [Issue integrations](https://docs.coderabbit.ai/integrations/issue-trackers)
   Check requirements and background written in Issues.
 
-- **[Web Search](https://docs.coderabbit.ai/knowledge-base/web-search)**  
+- [Web Search](https://docs.coderabbit.ai/knowledge-base/web-search)
   Check recent external documentation and public information.
 
-- **[Linters and SAST](https://docs.coderabbit.ai/tools)**  
+- [Linters and SAST](https://docs.coderabbit.ai/tools)
   Run static analysis and security-oriented checks.
 
-- **[Learnings](https://docs.coderabbit.ai/knowledge-base/learnings)**  
+- [Learnings](https://docs.coderabbit.ai/knowledge-base/learnings)
   Reflect team review preferences in future reviews.
 
 By combining multiple kinds of information, CodeRabbit can find issues that are difficult to notice by looking only at changed lines.

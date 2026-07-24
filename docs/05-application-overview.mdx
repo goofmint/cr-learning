@@ -60,12 +60,11 @@ flowchart LR
   C -->|fetch| A[Hono API on Node.js]
   A -->|保存・検索| D[(SQLite)]
   A -->|HTML取得| W[外部Webページ]
-  A -->|OGP画像保存| R[(data/ogp/)]
 ```
 
 ブックマーク一覧を表示するとき、React画面は`/api/bookmarks`を呼び出します。APIはSQLiteからブックマークを読み出し、JSONとして返します。
 
-ブックマークを追加するとき、React画面はURLをAPIへ送ります。APIはURLを正規化し、リンク先ページの`<title>`を取得し、SQLiteへ保存します。OGP画像が見つかった場合は、画像ファイルをローカルの `data/ogp/` に保存します。
+ブックマークを追加するとき、React画面はURLをAPIへ送ります。APIはURLを正規化し、リンク先ページの`<title>`を取得してSQLiteへ保存します。
 
 ## なぜこの題材を使うのか
 
