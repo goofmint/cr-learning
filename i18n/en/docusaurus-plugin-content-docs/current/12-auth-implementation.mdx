@@ -7,9 +7,9 @@ title: Implement Authentication
 
 ## Goal
 
-Add an authentication feature to Bookmark Demo so that **only logged-in users can use the bookmark feature**.
+Add an authentication feature to Bookmark Demo so that only logged-in users can use the bookmark feature.
 
-The goal of this chapter is **not** to write all of the authentication code yourself. It is **to give an AI coding tool the right implementation direction and to produce changes in units that are easy to review**. When the implementation is done, you will be able to experience the whole flow: a login screen, sign-up, login, logout, session checking, and protecting the API when not logged in.
+The goal of this chapter is to implement a login screen, sign-up, login, logout, session checking, and API protection for unauthenticated users.
 
 :::note[How to Proceed in This Chapter]
 For this chapter, either of the following approaches is fine.
@@ -22,9 +22,9 @@ If your goal is to experience the IDE review in the next chapter, it is fine to 
 
 ## The Authentication Feature \{#feature}
 
-This time, rather than OAuth login with an external service, we implement **login with an email address and password**, which is easier to handle as local teaching material.
+This time, rather than OAuth login with an external service, we implement login with an email address and password, which is easier to handle as local teaching material.
 
-When login succeeds, the server creates a random session token and stores it in the browser as an **HTTP-only cookie**. The React screen never reads the cookie's contents directly. On subsequent API requests, the browser sends the cookie automatically, and the server checks the session.
+When login succeeds, the server creates a random session token and stores it in the browser as an HTTP-only cookie. The React screen never reads the cookie's contents directly. On subsequent API requests, the browser sends the cookie automatically, and the server checks the session.
 
 ```mermaid
 flowchart TD
@@ -50,8 +50,8 @@ This time we add the following five things.
 
 The feature policy is as follows. This becomes the "spec" when you hand the implementation off to the AI, so make sure you understand it well.
 
-- **Do not store passwords in plain text.** Hash them with something like Node.js's standard `crypto.scrypt` before storing.
-- **Do not store session tokens in the database in plain text** either. Put the raw token in the cookie, and store a value hashed with something like SHA-256 in the DB.
+- Do not store passwords in plain text. Hash them with something like Node.js's standard `crypto.scrypt` before storing.
+- Do not store session tokens in the database in plain text either. Put the raw token in the cookie, and store a value hashed with something like SHA-256 in the DB.
 - Give the cookie `HttpOnly`, `SameSite=Lax`, and `Path=/`. Do not require `Secure` in the development environment.
 - Give sessions an expiration. Do not treat an expired session as logged in.
 - If the bookmark API is called when not logged in, return `401 Unauthorized`.
@@ -108,7 +108,7 @@ Adding a one-line description of "what kind of app this is" at the start of the 
 
 ## Sample Prompts \{#prompts}
 
-From here are the sample prompts per step. Run them **one at a time, in order**, and check the changes with `git diff` each time.
+From here are the sample prompts per step. Run them one at a time, in order, and check the changes with `git diff` each time.
 
 The key is not for a human to write out all of the SQL and function bodies in advance. Have the AI agent first read the existing code, then implement in line with the project's conventions. In the prompts, convey only "what you want to achieve" and "the non-negotiable conditions."
 

@@ -1,5 +1,9 @@
 language: ja
 reviews:
+  post_merge_actions:
+    - enabled: true
+      name: Slack通知
+      prompt: マージが完了したら、Slackのall-goofmintチャンネルにPRの概要と、PRのオープンからマージ完了までの時間を報告してください。
   path_filters:
     - "!build/**"
     - "!.docusaurus/**"
