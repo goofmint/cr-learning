@@ -1,0 +1,116 @@
+---
+sidebar_position: 12
+title: Experience an IDE Review
+---
+
+# Experience an IDE Review
+
+## Goal
+
+Using the CodeRabbit extension you added in [Set Up the VS Code Extension](vscode-extension-setup), you will experience the flow of getting a review inside the IDE before you create a PR.
+
+In the previous chapter, you added an authentication feature to Bookmark Demo. In this chapter, using that change as the subject, you will see what kinds of comments CodeRabbit produces, how to read them, and how to respond to them.
+
+## Start an IDE Review
+
+You will use the CodeRabbit extension you installed in [Set Up the VS Code Extension](vscode-extension-setup). You can install the extension by searching for `CodeRabbit` in the VS Code Extensions view, or from the [Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=CodeRabbit.coderabbit-vscode).
+
+Click the CodeRabbit icon on the left side of VS Code to open the CodeRabbit sidebar.
+
+Open the **Reviews** tab in the sidebar and press the **Review all changes** button. This starts a review of all the changes currently in your working tree.
+
+The review takes a little while. When it finishes, CodeRabbit's comments appear for each changed file.
+
+## Read the Types of Comments
+
+The review results list comments for each file. Comments come in types such as the following.
+
+- **Potential Issue**: A possible problem you should consider addressing, such as a bug, a security issue, or a missing part of the specification
+- **NITPICKS**: Lower-priority comments about naming, wording, minor readability, and the like
+
+Read the **Potential Issue** comments first, giving them priority. For security-related changes like an authentication feature, pay special attention when comments come up about passwords, cookies, sessions, or missing authorization.
+
+NITPICKS, on the other hand, are not something you must always fix. Decide whether they fit the project's direction and whether they are worth fixing now.
+
+## Check Inline Comments on the File
+
+When you click a comment in the Reviews tab, the viewer for the target file opens. On the relevant line, CodeRabbit's comment is shown inline.
+
+On this screen, you can look at the diff and check "which line the comment is about" and "why it is being called a problem." Do not read only the comment text—always look at the surrounding code as well. Judge whether the AI's comment is correct against the current code and the specification.
+
+## Actions You Can Take on a Comment
+
+An inline comment shows the actions available for that comment. The main actions are as follows.
+
+| Action | When to use it |
+| --- | --- |
+| **Apply suggested change** | Apply a small fix that CodeRabbit proposed, right there on the spot |
+| **Ignore** | Ignore a comment you have decided does not need to be addressed in this project |
+| **Fix with AI** | Send the instructions needed for the fix to your configured AI coding agent |
+| **Collapse all** | Close all the expanded comments at once |
+| **Provide feedback** | Return feedback on the CodeRabbit comment itself |
+
+**Apply suggested change** is convenient, but always read the diff before applying. The proposed fix does not necessarily match your intended specification or the design of the existing code.
+
+**Ignore** is used when a comment does not need to be addressed. For example, processing you intentionally left out as a simplification for the tutorial, or an improvement planned for a later chapter, may be ignored here. However, when you ignore a comment related to security or data loss, be ready to explain the reason.
+
+## Use Fix with AI
+
+When you choose **Fix with AI**, an AI prompt for fixing that comment is sent to the AI coding agent you configured in advance.
+
+Depending on the Agent Type you set, the destination changes—Claude Code, Codex CLI, a GitHub Copilot–style extension, the clipboard, and so on. When the agent starts, it is handed a prompt that includes CodeRabbit's comment, the target file, and the expected fix approach.
+
+The important thing here is not to consider the job done once the AI has made the fix. After the fix, always check the following.
+
+- Whether the comment has really been resolved
+- Whether any extra files or overly large changes have crept in
+- Whether the assumptions of the authentication are broken
+- Whether the build and tests pass
+
+For a change to the authentication feature, at the very least run `npm run build` and `npm test`, and confirm that login, logout, and API protection when not logged in are not broken.
+
+## Return Feedback on a Comment
+
+From **Provide feedback**, you can return feedback on a CodeRabbit comment.
+
+The feedback you can return is as follows.
+
+- **Comment is helpful**
+- **Comment is not true**
+- **Comment is poorly formatted**
+- **Comment is attached to the wrong line(s)**
+- **Comment suggestion is invalid**
+
+For a correct comment, return **Comment is helpful**. When it was a false positive, choose **Comment is not true**; when the proposed code is broken, choose **Comment suggestion is invalid**.
+
+This feedback is not just a rating—it is also practice in judging for yourself "where the AI review was useful and where it was off."
+
+## Check from the Comment List
+
+CodeRabbit's review results appear not only in the Reviews tab but also in the IDE's comment list.
+
+When you open VS Code's comment view, you can see the comments attached per file and per line in a list. This is handy when you want to work through several comments in order, or when you are looking for comments you have not addressed yet.
+
+## Recheck After Responding
+
+Once you have addressed a comment, check the diff again.
+
+```bash
+git diff
+npm run build
+npm test
+```
+
+As needed, run the review again from CodeRabbit's Reviews tab. Because you can use an IDE review before creating a PR, reducing the obvious problems here makes it easier to focus the PR review on larger design and specification concerns.
+
+## Summary So Far
+
+In this chapter, you experienced CodeRabbit's IDE review in VS Code.
+
+- Added the CodeRabbit extension and ran **Review all changes** from the Reviews tab
+- Checked the **Potential Issue** and **NITPICKS** comments per file
+- Clicked a comment and read it as an inline comment on the file
+- Reviewed actions such as **Apply suggested change**, **Ignore**, **Fix with AI**, and **Provide feedback**
+- Saw that you can also check the review results from the IDE's comment list
+
+An IDE review can be used as a self-check before you submit a PR. Get comfortable with the flow of checking the diff inside the editor and addressing only the comments you need to.
