@@ -9,7 +9,7 @@ title: Create a PR
 
 Take the changes you made in [Implement OGP Fetching](ogp-implementation), Commit them, Push them to GitHub, and turn them into a PR (Pull Request).
 
-The goal of this chapter is **having a PR created**. Once the PR exists, you can receive a CodeRabbit review in the next chapter.
+The goal of this chapter is to create a PR. Once the PR exists, you can receive a CodeRabbit review in the next chapter.
 
 What Branch, Commit, Push, and PR each do was already explained in [GitHub Flow and PRs](github-flow-pr), so it is not repeated here. Here you put this OGP feature onto that flow for real.
 
@@ -125,7 +125,7 @@ At this point, the goal of this chapter is achieved.
 
 ## Common Stumbling Points
 
-**`git push` errors out**
+`git push` errors out
 
 If on the first Push you run just `git push` without `-u origin feature/ogp-image`, the destination is not set and it errors. Run it with `-u` the first time.
 
@@ -133,7 +133,7 @@ If on the first Push you run just `git push` without `-u origin feature/ogp-imag
 git push -u origin feature/ogp-image
 ```
 
-**Newly created files are not in the Commit**
+Newly created files are not in the Commit
 
 `git commit -am` only includes files Git already tracks. This time there are new files such as `0003_add_ogp_image.sql` and `ogp.ts`, so this would miss them. Run `git add` on new files first, then Commit. After the Commit, you can check the files actually included in that Commit with the following command.
 
@@ -143,7 +143,7 @@ git show --name-only --oneline HEAD
 
 If all the files you intended are listed, you are fine.
 
-**Unrelated files are mixed into the diff**
+Unrelated files are mixed into the diff
 
 `git status` or `git diff` may show files unrelated to this change (such as locally generated artifacts). Exclude anything you do not want in the Commit before running `git add`. If you already staged it, you can unstage it with the following command.
 
@@ -151,7 +151,7 @@ If all the files you intended are listed, you are fine.
 git restore --staged file-name
 ```
 
-**The PR diff is empty, or shows changes you don't recognize**
+The PR diff is empty, or shows changes you don't recognize
 
 Almost always this means base (the target) and compare (the source) were selected the other way around. Confirm that base is `main` and compare is `feature/ogp-image`.
 

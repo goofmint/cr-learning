@@ -27,13 +27,13 @@ CodeRabbitには、大きく分けて次の機能があります。
 
 レビューは、CodeRabbitの基本となる機能です。詳しくは[Pull Request Reviews](https://docs.coderabbit.ai/overview/pull-request-review)で確認できます。主に次の場所で使えます。
 
-- **PRレビュー**  
+- PRレビュー
   GitHubなどでPRを作成すると、CodeRabbitが変更内容を確認し、要約やレビューコメントを投稿します。追加のコミットを push した場合も、新しく変わった部分を確認できます。
 
-- **[VS Codeでのレビュー](https://docs.coderabbit.ai/ide)**  
+- [VS Codeでのレビュー](https://docs.coderabbit.ai/ide)
   エディタ上で、まだコミットしていない変更を確認できます。PRを作る前に気になる点を見つけられます。
 
-- **[CLIでのレビュー](https://docs.coderabbit.ai/cli)**  
+- [CLIでのレビュー](https://docs.coderabbit.ai/cli)
   ターミナルからCodeRabbitのレビューを実行できます。コミット前やCIの流れに組み込みたい場合に使えます。
 
 この教材では、まずPRレビューを中心に扱います。PR上でどのようなコメントが出るのか、どのように受け止めて修正するのかを体験するためです。
@@ -72,13 +72,13 @@ CodeRabbitのコメントは、最終判断ではありません。AIからの�
 
 CodeRabbitのレビューでは、主に次のような情報を確認します。
 
-- **要約**  
+- 要約
   PRで何が変わったのかを短く整理したものです。レビュアーが全体像をつかむ助けになります。
 
-- **レビューコメント**  
+- レビューコメント
   変更されたコードに対して、気になる点や確認すべき点を示すコメントです。すべてをそのまま受け入れるのではなく、理由を読んで判断します。
 
-- **修正案**  
+- 修正案
   コメントによっては、具体的な直し方が提示されることがあります。便利ですが、プロジェクトの方針や既存コードに合っているかは確認が必要です。
 
 初学者にとって大切なのは、コメントの数だけを見ることではありません。なぜその指摘が出ているのかを読み、必要な修正かどうかを考えることです。
@@ -113,22 +113,22 @@ CodeRabbitは、変更されたコードだけでなく、周辺の情報も使�
 
 たとえば、次のような情報をレビューに反映できます。
 
-- **[パスインストラクション](https://docs.coderabbit.ai/configuration/path-instructions)**  
+- [パスインストラクション](https://docs.coderabbit.ai/configuration/path-instructions)
   ファイルやディレクトリごとにレビュー観点を変えられます。
 
-- **[MCPサーバー](https://docs.coderabbit.ai/knowledge-base/mcp-context)**  
+- [MCPサーバー](https://docs.coderabbit.ai/knowledge-base/mcp-context)
   社内ドキュメントや組織内の規約を参照できます。
 
-- **[Issue連携](https://docs.coderabbit.ai/integrations/issue-trackers)**  
+- [Issue連携](https://docs.coderabbit.ai/integrations/issue-trackers)
   Issueに書かれた要件や背景を確認できます。
 
-- **[Web Search](https://docs.coderabbit.ai/knowledge-base/web-search)**  
+- [Web Search](https://docs.coderabbit.ai/knowledge-base/web-search)
   最新の外部ドキュメントや公開情報を確認できます。
 
-- **[LinterやSAST](https://docs.coderabbit.ai/tools)**  
+- [LinterやSAST](https://docs.coderabbit.ai/tools)
   静的解析やセキュリティ観点の確認を行えます。
 
-- **[Learnings](https://docs.coderabbit.ai/knowledge-base/learnings)**  
+- [Learnings](https://docs.coderabbit.ai/knowledge-base/learnings)
   チームのレビュー方針を今後のレビューに反映できます。
 
 このように複数の情報を組み合わせることで、単に変更行を見るだけでは気づきにくい問題を見つけやすくなります。

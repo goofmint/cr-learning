@@ -9,7 +9,7 @@ title: Experience a CodeRabbit Review
 
 After creating a PR in [Create a PR](create-pull-request), we look at what happens on the GitHub screen.
 
-When you open a PR, CodeRabbit automatically starts a review. In this chapter you will experience the whole cycle—**read the review → understand what it means → respond → receive another review**—while looking at a real sample PR.
+When you open a PR, CodeRabbit automatically starts a review. In this chapter you will experience the whole cycle—read the review → understand what it means → respond → receive another review—while looking at a real sample PR.
 
 ## Open the Sample PR
 
@@ -25,14 +25,14 @@ Right after you create a PR, or right after you push a new commit to a PR, CodeR
 
 A review takes a few minutes. When it finishes, two kinds of output appear on the PR.
 
-1. **One large comment on the whole PR** (summary and overview)
-2. **Comments tied to specific lines of the code diff** (inline comments—per-line feedback)
+1. One large comment on the whole PR (summary and overview)
+2. Comments tied to specific lines of the code diff (inline comments—per-line feedback)
 
 Let's look at them in order.
 
 ## Read the Overview Comment
 
-First, the large comment near the top of the PR screen. This is where "what this PR does as a whole" is summarized. **Getting the overall picture of the change here, before tracing the diff line by line**, is the trick to reading a review.
+First, the large comment near the top of the PR screen. This is where "what this PR does as a whole" is summarized. Getting the overall picture of the change here, before tracing the diff line by line, is the trick to reading a review.
 
 This comment is made up of the following parts. We will look at them in order.
 
@@ -40,9 +40,9 @@ This comment is made up of the following parts. We will look at them in order.
 
 A short, human-oriented summary that classifies the changes into categories such as "New Features" and "Tests."
 
-> * **New Features**: Show a thumbnail for bookmarks that have an OGP image. Images are lazy-loaded and responsive, served through a new image delivery endpoint. The thumbnail URL is stored in the DB.
-> * **Tests**: Added E2E/unit tests that verify thumbnail extraction, storage, delivery, and whether it is displayed.
-> * **Chores**: Updated `.gitignore` to exclude a temporary directory.
+> * New Features: Show a thumbnail for bookmarks that have an OGP image. Images are lazy-loaded and responsive, served through a new image delivery endpoint. The thumbnail URL is stored in the DB.
+> * Tests: Added E2E/unit tests that verify thumbnail extraction, storage, delivery, and whether it is displayed.
+> * Chores: Updated `.gitignore` to exclude a temporary directory.
 
 ### Walkthrough
 
@@ -114,15 +114,15 @@ Past PRs that seem related to this change are listed. This helps you grasp the b
 
 The results of automated checks on whether it is OK to merge. In the sample PR, four items pass and one is a warning.
 
-> 🚥 Pre-merge checks ｜ ✅ 4 ｜ ❌ 1
+> 🚥 Pre-merge checks ｜ ✅ 4 ｜ ⚠️ 1
 >
-> **Warning (1)**
+> Warning (1)
 >
 > | Check name | State | Content |
 > | --- | --- | --- |
 > | Docstring Coverage | ⚠️ Warning | Docstring coverage is 0.00%, which is insufficient. The required threshold is 80.00%. Write docstrings for the functions that are missing them. |
 >
-> **Passed (4)**
+> Passed (4)
 >
 > | Check name | State | Content |
 > | --- | --- | --- |
@@ -137,7 +137,7 @@ A warning does not stop the merge; it is a heads-up that says "there is somethin
 
 Next is the main body of the review. CodeRabbit attaches feedback to specific lines of code.
 
-At the top of the review, it shows how many comments you should consider acting on, such as "**Actionable comments posted: 5**." The sample PR has five.
+At the top of the review, it shows how many comments you should consider acting on, such as "Actionable comments posted: 5." The sample PR has five.
 
 Each inline comment uses leading badges so you can tell the "type," "severity," and "effort to respond" at a glance. Let's look at a real example from the sample PR.
 
@@ -156,17 +156,17 @@ The badges mean the following.
 
 For the example above, you can read it as "a suspected security issue (Potential issue)," "fairly serious (Major)," and "hard to address (Heavy lift)." Looking at the badges lets you immediately decide what to tackle first.
 
-The body of the comment describes **what the problem is and why it is a problem**. Here are a few of the comments from the sample PR.
+The body of the comment describes what the problem is and why it is a problem. Here are a few of the comments from the sample PR.
 
-- **No SSRF protection** (Major / security): Because the user-provided URL is fetched as is, internal networks or `localhost` could be targeted.
-- **Registration/update waits for OGP fetching to complete** (Major / performance): If fetching the external page is slow, the bookmark registration response is delayed by that much. A design that saves first and fetches the image afterward is preferable.
-- **Scanning stops the moment one invalid `og:image` is found** (Minor): A valid `og:image` later on cannot be picked up.
+- No SSRF protection (Major / security): Because the user-provided URL is fetched as is, internal networks or `localhost` could be targeted.
+- Registration/update waits for OGP fetching to complete (Major / performance): If fetching the external page is slow, the bookmark registration response is delayed by that much. A design that saves first and fetches the image afterward is preferable.
+- Scanning stops the moment one invalid `og:image` is found (Minor): A valid `og:image` later on cannot be picked up.
 
 In this way, it points out—with reasons—aspects that are hard to notice from the code diff alone (security, performance, oversights).
 
 ## Apply Suggested Changes
 
-Some comments even propose the fix code. The "scanning stops" comment in the sample PR comes with a **Committable suggestion** (a proposal you can apply as is) like the following.
+Some comments even propose the fix code. The "scanning stops" comment in the sample PR comes with a Committable suggestion (a proposal you can apply as is) like the following.
 
 ```diff
 -      if (resolved.protocol !== "http:" && resolved.protocol !== "https:") {
@@ -177,10 +177,10 @@ Some comments even propose the fix code. The "scanning stops" comment in the sam
 +      }
 ```
 
-For proposals like this, a **"Commit suggestion" button** appears on the GitHub screen. Pressing it adds the fix directly to the PR as a new commit. You can apply it with a single button, without writing code locally.
+For proposals like this, a "Commit suggestion" button appears on the GitHub screen. Pressing it adds the fix directly to the PR as a new commit. You can apply it with a single button, without writing code locally.
 
 :::warning[Always read the diff before pressing the button]
-You can apply it with one click, but a proposal is not always correct. **Read and understand what the proposal changes and how, yourself, before** applying it. If you drop in a proposal you do not understand, code you cannot explain later will remain in the PR.
+You can apply it with one click, but a proposal is not always correct. Read and understand what the proposal changes and how, yourself, before applying it. If you drop in a proposal you do not understand, code you cannot explain later will remain in the PR.
 :::
 
 ## Have AI Fix It (Prompt for AI Agents)
@@ -194,13 +194,13 @@ Verify each finding against current code. Fix only still-valid issues, skip the
 rest with a brief reason, keep changes minimal, and validate.
 ```
 
-This means "**verify each finding against the current code, fix only the ones that are still valid, skip the rest with a brief reason, keep changes minimal, and validate**." The point is that, rather than dumping everything on the AI, the instruction has "do not take it at face value—verify before fixing" built into it.
+This means "verify each finding against the current code, fix only the ones that are still valid, skip the rest with a brief reason, keep changes minimal, and validate." The point is that, rather than dumping everything on the AI, the instruction has "do not take it at face value—verify before fixing" built into it.
 
 You hand this instruction to the AI to make the fix, check the result yourself, and then commit. The flow becomes: feedback → fix with AI → check it yourself.
 
 ## Respond and Receive Another Review
 
-Once you have addressed the feedback, **commit the fix to the same branch and push** it. You do not need to recreate the PR.
+Once you have addressed the feedback, commit the fix to the same branch and push it. You do not need to recreate the PR.
 
 ```bash
 git add .
@@ -208,7 +208,7 @@ git commit -m "Add SSRF protection and clean up tests"
 git push
 ```
 
-When you push, CodeRabbit automatically performs **another review**. If the previous feedback has been properly fixed, that comment is marked "✅ Addressed in commit xxxx" and treated as resolved. In the sample PR too, the migration rollback note and the test cleanup comments are marked addressed in later commits.
+When you push, CodeRabbit automatically performs another review. If the previous feedback has been properly fixed, that comment is marked "✅ Addressed in commit xxxx" and treated as resolved. In the sample PR too, the migration rollback note and the test cleanup comments are marked addressed in later commits.
 
 When there is no new feedback, CodeRabbit displays the following.
 
@@ -222,9 +222,9 @@ Once you reach this point, the CodeRabbit review has reached a milestone.
 
 Feedback is not an "absolute order you must obey."
 
-- **Address Major and security issues (such as SSRF) with priority.** Their impact is large.
-- **You may pick and choose among Nitpicks (minor comments).** The sample PR also has comments at the level of "adding a certain test case would be even better."
-- **For anything you decide not to address, reply with the reason.** You can also talk to `@coderabbitai` in the comment thread to ask questions or discuss.
+- Address Major and security issues (such as SSRF) with priority. Their impact is large.
+- You may pick and choose among Nitpicks (minor comments). The sample PR also has comments at the level of "adding a certain test case would be even better."
+- For anything you decide not to address, reply with the reason. You can also talk to `@coderabbitai` in the comment thread to ask questions or discuss.
 
 A review is not a one-way directive; it is a conversation aimed at making the change better. What matters is being able to explain in words "why I am not following this piece of feedback."
 

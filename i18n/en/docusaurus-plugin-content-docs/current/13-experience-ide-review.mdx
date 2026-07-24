@@ -17,7 +17,7 @@ You will use the CodeRabbit extension you installed in [Set Up the VS Code Exten
 
 Click the CodeRabbit icon on the left side of VS Code to open the CodeRabbit sidebar.
 
-Open the **Reviews** tab in the sidebar and press the **Review all changes** button. This starts a review of all the changes currently in your working tree.
+Open the Reviews tab in the sidebar and press the Review all changes button. This starts a review of all the changes currently in your working tree.
 
 The review takes a little while. When it finishes, CodeRabbit's comments appear for each changed file.
 
@@ -25,10 +25,10 @@ The review takes a little while. When it finishes, CodeRabbit's comments appear 
 
 The review results list comments for each file. Comments come in types such as the following.
 
-- **Potential Issue**: A possible problem you should consider addressing, such as a bug, a security issue, or a missing part of the specification
-- **NITPICKS**: Lower-priority comments about naming, wording, minor readability, and the like
+- Potential Issue: A possible problem you should consider addressing, such as a bug, a security issue, or a missing part of the specification
+- NITPICKS: Lower-priority comments about naming, wording, minor readability, and the like
 
-Read the **Potential Issue** comments first, giving them priority. For security-related changes like an authentication feature, pay special attention when comments come up about passwords, cookies, sessions, or missing authorization.
+Read the Potential Issue comments first, giving them priority. For security-related changes like an authentication feature, pay special attention when comments come up about passwords, cookies, sessions, or missing authorization.
 
 NITPICKS, on the other hand, are not something you must always fix. Decide whether they fit the project's direction and whether they are worth fixing now.
 
@@ -44,19 +44,19 @@ An inline comment shows the actions available for that comment. The main actions
 
 | Action | When to use it |
 | --- | --- |
-| **Apply suggested change** | Apply a small fix that CodeRabbit proposed, right there on the spot |
-| **Ignore** | Ignore a comment you have decided does not need to be addressed in this project |
-| **Fix with AI** | Send the instructions needed for the fix to your configured AI coding agent |
-| **Collapse all** | Close all the expanded comments at once |
-| **Provide feedback** | Return feedback on the CodeRabbit comment itself |
+| Apply suggested change | Apply a small fix that CodeRabbit proposed, right there on the spot |
+| Ignore | Ignore a comment you have decided does not need to be addressed in this project |
+| Fix with AI | Send the instructions needed for the fix to your configured AI coding agent |
+| Collapse all | Close all the expanded comments at once |
+| Provide feedback | Return feedback on the CodeRabbit comment itself |
 
-**Apply suggested change** is convenient, but always read the diff before applying. The proposed fix does not necessarily match your intended specification or the design of the existing code.
+Apply suggested change is convenient, but always read the diff before applying. The proposed fix does not necessarily match your intended specification or the design of the existing code.
 
-**Ignore** is used when a comment does not need to be addressed. For example, processing you intentionally left out as a simplification for the tutorial, or an improvement planned for a later chapter, may be ignored here. However, when you ignore a comment related to security or data loss, be ready to explain the reason.
+Ignore is used when a comment does not need to be addressed. For example, processing you intentionally left out as a simplification for the tutorial, or an improvement planned for a later chapter, may be ignored here. However, when you ignore a comment related to security or data loss, be ready to explain the reason.
 
 ## Use Fix with AI
 
-When you choose **Fix with AI**, an AI prompt for fixing that comment is sent to the AI coding agent you configured in advance.
+When you choose Fix with AI, an AI prompt for fixing that comment is sent to the AI coding agent you configured in advance.
 
 Depending on the Agent Type you set, the destination changes—Claude Code, Codex CLI, a GitHub Copilot–style extension, the clipboard, and so on. When the agent starts, it is handed a prompt that includes CodeRabbit's comment, the target file, and the expected fix approach.
 
@@ -71,17 +71,17 @@ For a change to the authentication feature, at the very least run `npm run build
 
 ## Return Feedback on a Comment
 
-From **Provide feedback**, you can return feedback on a CodeRabbit comment.
+From Provide feedback, you can return feedback on a CodeRabbit comment.
 
 The feedback you can return is as follows.
 
-- **Comment is helpful**
-- **Comment is not true**
-- **Comment is poorly formatted**
-- **Comment is attached to the wrong line(s)**
-- **Comment suggestion is invalid**
+- Comment is helpful
+- Comment is not true
+- Comment is poorly formatted
+- Comment is attached to the wrong line(s)
+- Comment suggestion is invalid
 
-For a correct comment, return **Comment is helpful**. When it was a false positive, choose **Comment is not true**; when the proposed code is broken, choose **Comment suggestion is invalid**.
+For a correct comment, return Comment is helpful. When it was a false positive, choose Comment is not true; when the proposed code is broken, choose Comment suggestion is invalid.
 
 This feedback is not just a rating—it is also practice in judging for yourself "where the AI review was useful and where it was off."
 
@@ -107,10 +107,10 @@ As needed, run the review again from CodeRabbit's Reviews tab. Because you can u
 
 In this chapter, you experienced CodeRabbit's IDE review in VS Code.
 
-- Added the CodeRabbit extension and ran **Review all changes** from the Reviews tab
-- Checked the **Potential Issue** and **NITPICKS** comments per file
+- Added the CodeRabbit extension and ran Review all changes from the Reviews tab
+- Checked the Potential Issue and NITPICKS comments per file
 - Clicked a comment and read it as an inline comment on the file
-- Reviewed actions such as **Apply suggested change**, **Ignore**, **Fix with AI**, and **Provide feedback**
+- Reviewed actions such as Apply suggested change, Ignore, Fix with AI, and Provide feedback
 - Saw that you can also check the review results from the IDE's comment list
 
 An IDE review can be used as a self-check before you submit a PR. Get comfortable with the flow of checking the diff inside the editor and addressing only the comments you need to.

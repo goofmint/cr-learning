@@ -27,16 +27,16 @@ You will prepare things in the following order. If you go from top to bottom, yo
 | [Step 6](#step-6) | Start the application locally and verify it works |
 
 :::note[Glossary]
-**Repository**: A place that stores source code together with its change history. It is hosted on GitHub.
+Repository: A place that stores source code together with its change history. It is hosted on GitHub.
 
-**Fork**: Making a full copy of someone else's repository under your own account. Because it is a copy, you can change it freely without affecting the original repository.
+Fork: Making a full copy of someone else's repository under your own account. Because it is a copy, you can change it freely without affecting the original repository.
 
-**Clone**: Downloading a repository on GitHub to your own computer.
+Clone: Downloading a repository on GitHub to your own computer.
 :::
 
 ## 1. Install Git \{#step-1}
 
-**Git** is a tool for recording the change history of source code. Without it the later steps cannot proceed, so we install it first.
+Git is a tool for recording the change history of source code. Without it the later steps cannot proceed, so we install it first.
 
 First, check whether it is already installed. Open a terminal (on Windows, "Command Prompt" or "PowerShell"; on Mac, "Terminal") and run the following.
 
@@ -71,7 +71,7 @@ After installing, run `git --version` once more and confirm that a version numbe
 
 ## 2. Create a GitHub Account \{#step-2}
 
-**GitHub** is a service that lets you put repositories on the internet and share them. CodeRabbit reviews also happen on GitHub, so an account is required.
+GitHub is a service that lets you put repositories on the internet and share them. CodeRabbit reviews also happen on GitHub, so an account is required.
 
 If you already have an account, skip this step and proceed to [Step 3](#step-3).
 
@@ -103,10 +103,10 @@ If you only want to experience an IDE review or a CLI review, you can proceed by
 If you are not going to do a PR review, proceed to [Step 4](#step-4).
 :::
 
-Because you cannot change this repository directly, you make **a copy under your own account (Fork)** and use that.
+Because you cannot change this repository directly, you make a copy under your own account (Fork) and use that.
 
 1. While logged in, open [https://github.com/goofmint/bookmark-demo](https://github.com/goofmint/bookmark-demo)
-2. Click the **"Fork"** button at the top right of the screen  
+2. Click the "Fork" button at the top right of the screen
 ![The bookmark-demo repository page, with a "Fork" button at the top right](/img/github-repository.jpg)
 3. Click the "Create fork" button
 
@@ -140,7 +140,7 @@ cd bookmark-demo
 
 ## 5. Install Node.js and Get the Required Parts \{#step-5}
 
-This application uses **Node.js**, a runtime for running JavaScript on your computer.
+This application uses Node.js, a runtime for running JavaScript on your computer.
 
 First, check whether it is installed.
 
@@ -148,7 +148,7 @@ First, check whether it is installed.
 node --version
 ```
 
-If `v22.5.0` or higher is shown, you are OK. If nothing is shown, or the number is smaller than 22.5, download and install the **LTS version** from the [official Node.js site](https://nodejs.org/) (the options can be left at their defaults).
+If `v22.5.0` or higher is shown, you are OK. If nothing is shown, or the number is smaller than 22.5, download and install the LTS version from the [official Node.js site](https://nodejs.org/) (the options can be left at their defaults).
 
 Next, install all the parts (libraries) the application needs to run, in one go. Run the following inside the `bookmark-demo` folder.
 
@@ -157,7 +157,7 @@ npm install
 ```
 
 :::note[Glossary]
-**npm** is a tool for managing parts for Node.js. `npm install` looks at the list of parts this application needs (`package.json`) and automatically downloads the required ones together. It may take a little time.
+npm is a tool for managing packages for Node.js. `npm install` looks at the list of packages this application needs (`package.json`) and automatically downloads the required ones together. It may take a little time.
 :::
 
 ## 6. Start Locally and Verify It Works \{#step-6}
