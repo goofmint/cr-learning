@@ -221,30 +221,26 @@ AIの実装がどうしても通らないときは、完成版のコードを取
 ブラウザで次のURLを開くと、`feat/ogp-image`Branchの中身がZipでダウンロードされます。
 
 ```text
-https://github.com/goofmint/bookmark-demo/archive/refs/heads/feat/ogp-image.zip
+https://github.com/goofmint/bookmark-demo/releases/download/ogp/ogp.zip
 ```
 
-ダウンロードしたZipを解凍すると、`bookmark-demo-feat-ogp-image`というフォルダができます。これは**完成版のコード一式**です。自分の`bookmark-demo`フォルダとは別の場所に置いておきます。
+ダウンロードしたZipを解凍すると、`ogp`というフォルダができます。これは**完成版のコード一式**です。自分の`bookmark-demo`フォルダとは別の場所に置いておきます。
 
 :::note[GitHub画面からダウンロードする場合]
-上のURLが分かりにくければ、[リポジトリのページ](https://github.com/goofmint/bookmark-demo)を開き、左上のBranch切り替えで`feat/ogp-image`を選び、緑色の **「Code」** ボタン →「Download ZIP」でも同じものが取得できます。
+上のURLが分かりにくければ、[リポジトリのページ](https://github.com/goofmint/bookmark-demo)を開き、右側のReleaseからOGPを選び、Assetsにある **「ogp.zip」** のリンクをクリックしてもダウンロードできます。
 :::
 
 ### 2. フォルダを差し替える
 
-今回の変更は、すべて次の3つのフォルダの中に収まっています。解凍したフォルダにある、この3つのフォルダで、自分の`bookmark-demo`フォルダの同じフォルダを**まるごと置き換え**ます。
+今回の変更は、すべて次の3つのフォルダの中に収まっています。展開したフォルダにある、この3つのフォルダで、自分の`bookmark-demo`フォルダの同じフォルダを**まるごと置き換え**ます。
 
-| 置き換えるフォルダ | 中身 |
+| 置き換えるフォルダとファイル | 中身 |
 | --- | --- |
 | `src` | 画面とAPIのコード |
 | `migrations` | データベースの設計図（`0003`が追加されます） |
 | `test` | テストコード |
-
-具体的には、自分の`bookmark-demo`フォルダにある`src`・`migrations`・`test`をいったん削除し、解凍したフォルダの`src`・`migrations`・`test`をそのままコピーして入れます。
-
-:::warning[置き換えるのはこの3フォルダだけ]
-解凍フォルダを**丸ごと**コピーしないでください。今回の学習で見る差分は `src`・`migrations`・`test` に集中しています。3フォルダだけを置き換えれば、`package.json` などのルート直下のファイルを意図せず上書きせずに済みます。
-:::
+| `vite.config.ts` | Viteの設定（OGP画像配信のために変更） |
+| `vitest.config.ts` | Vitestの設定（OGP画像配信のために変更） |
 
 ### 3. 反映して動作確認する
 

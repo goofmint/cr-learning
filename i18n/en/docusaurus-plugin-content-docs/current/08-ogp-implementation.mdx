@@ -226,30 +226,26 @@ The finished version is on a Branch called `feat/ogp-image` in the demo reposito
 Opening the following URL in your browser downloads the contents of the `feat/ogp-image` Branch as a Zip.
 
 ```text
-https://github.com/goofmint/bookmark-demo/archive/refs/heads/feat/ogp-image.zip
+https://github.com/goofmint/bookmark-demo/releases/download/ogp/ogp.zip
 ```
 
-When you unzip the downloaded file, a folder named `bookmark-demo-feat-ogp-image` is created. This is the **complete finished code**. Keep it in a different location from your own `bookmark-demo` folder.
+When you unzip the downloaded file, a folder named `ogp` is created. This is the **complete finished code**. Keep it in a different location from your own `bookmark-demo` folder.
 
 :::note[Downloading from the GitHub screen]
-If the URL above is confusing, open the [repository page](https://github.com/goofmint/bookmark-demo), select `feat/ogp-image` with the Branch switcher at the top left, and use the green **"Code"** button → "Download ZIP" to get the same thing.
+If the URL above is confusing, open the [repository page](https://github.com/goofmint/bookmark-demo), select OGP from the Releases on the right, and click the **"ogp.zip"** link under Assets to download it.
 :::
 
 ### 2. Swap the Folders
 
-This time's changes all fit inside the following three folders. Use these three folders from the unzipped folder to **replace wholesale** the same folders in your own `bookmark-demo` folder.
+This time's changes all fit inside the following three folders. Use these three folders from the extracted folder to **replace wholesale** the same folders in your own `bookmark-demo` folder.
 
-| Folder to replace | Contents |
+| Folders and files to replace | Contents |
 | --- | --- |
 | `src` | Screen and API code |
 | `migrations` | Database blueprints (`0003` is added) |
 | `test` | Test code |
-
-Concretely, delete `src`, `migrations`, and `test` in your own `bookmark-demo` folder once, and copy in `src`, `migrations`, and `test` from the unzipped folder as-is.
-
-:::warning[Replace only these three folders]
-Do not copy the unzipped folder **wholesale**. The diff you inspect in this hands-on is concentrated in `src`, `migrations`, and `test`. Replacing only these three folders avoids unintentionally overwriting root files such as `package.json`.
-:::
+| `vite.config.ts` | Vite configuration (changed to serve OGP images) |
+| `vitest.config.ts` | Vitest configuration (changed to serve OGP images) |
 
 ### 3. Apply and Verify
 
